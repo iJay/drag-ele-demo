@@ -2,7 +2,7 @@
   <img
     @dragstart="$listeners.dragstart"
     class="image-widget"
-    src="../assets/image-icon.svg"
+    src="../../assets/image-icon.svg"
   />
 </template>
 

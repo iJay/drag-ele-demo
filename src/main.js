@@ -2,16 +2,26 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-// import VueDraggableResizable from "vue-draggable-resizable";
-
-// optionally import default styles
-// import "vue-draggable-resizable/dist/VueDraggableResizable.css";
 
 // 全局注册组件
-Vue.component("image-widget", () => import("./components/ImageWidget.vue"));
-Vue.component("text-widget", () => import("./components/TextWidget.vue"));
-// Vue.component("vue-draggable-resizable", VueDraggableResizable);
-
+Vue.component("image-widget", () =>
+  import("./components/widget/ImageWidget.vue")
+);
+Vue.component("text-widget", () =>
+  import("./components/widget/TextWidget.vue")
+);
+Vue.component("flex-container", () =>
+  import("./components/container/FlexContainer.vue")
+);
+Vue.component("freedom-container", () =>
+  import("./components/container/FreedomContainer.vue")
+);
+Vue.component("main-container", () =>
+  import("./components/container/MainContainer.vue")
+);
+Vue.component("section-container", () =>
+  import("./components/container/SectionContainer.vue")
+);
 Vue.config.productionTip = false;
 
 new Vue({

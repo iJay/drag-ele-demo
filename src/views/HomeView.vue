@@ -64,6 +64,54 @@ export default {
             left: "0px",
           },
         },
+        {
+          id: 0,
+          label: "自由容器",
+          componentName: "freedom-container",
+          icon: require("../assets/freedom-container.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
+        },
+        {
+          id: 0,
+          label: "Flex容器",
+          componentName: "flex-container",
+          icon: require("../assets/flex-container.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
+        },
+        {
+          id: 0,
+          label: "Section容器",
+          componentName: "section-container",
+          icon: require("../assets/section-container.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
+        },
+        {
+          id: 0,
+          label: "Main容器",
+          componentName: "main-container",
+          icon: require("../assets/main-container.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
+        },
       ],
       mouseInEleX: 0,
       mouseInEleY: 0,

@@ -2,12 +2,15 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import FlexContainer from "./components/FlexContainer.vue";
-import TextContainer from "./components/TextContainer.vue";
+// import VueDraggableResizable from "vue-draggable-resizable";
 
-// 全局注册flex容器组件
-Vue.component("flex-container", FlexContainer);
-Vue.component("text-container", TextContainer);
+// optionally import default styles
+// import "vue-draggable-resizable/dist/VueDraggableResizable.css";
+
+// 全局注册组件
+Vue.component("image-widget", () => import("./components/ImageWidget.vue"));
+Vue.component("text-widget", () => import("./components/TextWidget.vue"));
+// Vue.component("vue-draggable-resizable", VueDraggableResizable);
 
 Vue.config.productionTip = false;
 

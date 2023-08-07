@@ -1,91 +1,136 @@
 <template>
   <div class="home">
     <div class="widget-container">
-      <draggable
-        tag="ul"
-        :list="widgets"
-        :clone="handleCloneEle"
-        :group="{ name: 'componentTree', pull: 'clone', put: false }"
-      >
-        <li v-for="item in widgets" :key="item.id">{{ item.name }}</li>
-      </draggable>
+      <ul>
+        <li
+          draggable="true"
+          @dragstart="(e) => handleDragStart(e, item)"
+          v-for="item in widgets"
+          :key="item.label"
+        >
+          <img :src="item.icon" alt="" />
+          <span>{{ item.label }}</span>
+        </li>
+      </ul>
     </div>
-    <div class="display-container">
-      <draggable
-        class="nest-list-wrapper"
-        :list="components"
-        group="componentTree"
-      >
-        <component
-          v-for="el in components"
-          :key="el.name"
-          :components="el.children"
-          :is="el.componentType"
-        ></component>
-      </draggable>
+    <div
+      class="display-container"
+      ref="displayContainer"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
+    >
+      <component
+        v-for="el in componentData"
+        :class="['drag-element']"
+        draggable="true"
+        @dragstart="(e) => handleDragStart(e, el)"
+        :key="el.id"
+        :is="el.componentName"
+        :style="el.style"
+      ></component>
     </div>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable";
+let componentId = 1;
 export default {
   name: "HomeView",
-  components: {
-    draggable,
-  },
   data() {
     return {
-      drag: false,
+      mode: "preview", // preview, online
       widgets: [
         {
-          id: 1,
-          name: "widget1",
-          type: "flex-container",
-          children: [],
+          id: 0,
+          label: "图片组件",
+          componentName: "image-widget",
+          icon: require("../assets/image-icon.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
         },
         {
-          id: 2,
-          name: "widget2",
-          type: "flex-container",
-          children: [],
-        },
-        {
-          id: 3,
-          name: "widget3",
-          type: "flex-container",
-          children: [],
-        },
-        {
-          id: 4,
-          name: "widget4",
-          type: "text-container",
-          children: [],
-        },
-        {
-          id: 5,
-          name: "widget5",
-          type: "text-container",
-          children: [],
-        },
-        {
-          id: 6,
-          name: "widget6",
-          type: "text-container",
-          children: [],
+          id: 0,
+          label: "文本组件",
+          componentName: "text-widget",
+          icon: require("../assets/text-icon.svg"),
+          dragEnd: false, // 是否已经在容器内
+          style: {
+            position: "absolute",
+            top: "0px",
+            left: "0px",
+          },
         },
       ],
-      components: [],
+      mouseInEleX: 0,
+      mouseInEleY: 0,
+      componentData: [],
     };
   },
   methods: {
-    handleCloneEle(item) {
-      return {
-        name: "component" + item.id,
-        id: item.id,
-        children: item.children,
-        componentType: item.type,
+    handleDragStart(e, widgetItem) {
+      // 记录当前拖动元素的鼠标在元素内的位置
+      this.mouseInEleX = e.pageX - e.currentTarget.getBoundingClientRect().x;
+      this.mouseInEleY = e.pageY - e.currentTarget.getBoundingClientRect().y;
+      console.log(this.mouseInEleX, this.mouseInEleY);
+      e.dataTransfer.effectAllowed = "copy";
+      e.dataTransfer.setData("text/plain", widgetItem.componentName);
+      const data = {
+        componentName: widgetItem.componentName,
+        id: widgetItem.id,
       };
+      e.dataTransfer.setData("application/json", JSON.stringify(data));
+    },
+    handleDragOver(e) {
+      e.preventDefault();
+    },
+    handleDrop(e) {
+      e.preventDefault();
+      const transferData = JSON.parse(
+        e.dataTransfer.getData("application/json")
+      );
+      console.log("transferData", transferData);
+      const hasExist = this.componentData.some(
+        (item) =>
+          item.id === transferData.id &&
+          item.componentName === transferData.componentName
+      );
+      if (!hasExist) {
+        const component = this.widgets.find(
+          (item) => item.componentName === transferData.componentName
+        );
+        if (component) {
+          const componentOpt = Object.assign({}, component);
+          componentOpt.id = componentId++;
+          // 重新定义拖拽元素在容器内释放的位置
+          const positionX =
+            e.pageX - this.$refs.displayContainer.offsetLeft - this.mouseInEleX;
+          const positionY =
+            e.pageY - this.$refs.displayContainer.offsetTop - this.mouseInEleY;
+          componentOpt.style = {
+            ...component.style,
+            top: `${positionY}px`,
+            left: `${positionX}px`,
+          };
+          this.componentData.push(componentOpt);
+        }
+      } else {
+        const positionX =
+          e.pageX - this.$refs.displayContainer.offsetLeft - this.mouseInEleX;
+        const positionY =
+          e.pageY - this.$refs.displayContainer.offsetTop - this.mouseInEleY;
+        const component = this.componentData.find(
+          (item) => item.id === transferData.id
+        );
+        component.style = {
+          ...component.style,
+          top: `${positionY}px`,
+          left: `${positionX}px`,
+        };
+      }
     },
   },
 };
@@ -114,8 +159,19 @@ export default {
         background-color: #ccc;
         margin: 20px;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        cursor: move;
+
+        img {
+          width: 60px;
+          height: 60px;
+        }
+
+        span {
+          font-size: 12px;
+        }
       }
     }
   }
@@ -123,24 +179,11 @@ export default {
     flex: 1;
     background-color: #eee;
     margin: 20px;
+    position: relative;
+    overflow: hidden;
 
-    .nest-list-wrapper {
-      height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    ul {
-      width: 100%;
-      min-height: 100px;
-      list-style: none;
-      box-sizing: border-box;
-      padding: 16px;
-      margin: 0px;
-      li {
-        width: 100%;
-        background-color: #ccc;
-        border: 1px solid #000;
-      }
+    .drag-element {
+      cursor: move;
     }
   }
 }

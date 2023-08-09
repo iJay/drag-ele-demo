@@ -5,7 +5,7 @@
         <li
           draggable="true"
           @dragstart="(e) => handleDragStart(e, item)"
-          v-for="item in widgets"
+          v-for="item in $store.state.widgets"
           :key="item.label"
         >
           <img :src="item.icon" alt="" />
@@ -20,10 +20,12 @@
       @drop="handleDrop"
     >
       <component
-        v-for="el in componentData"
+        v-for="el in $store.state.componentData"
+        :componentData="el.children"
         :class="['drag-element']"
         draggable="true"
         @dragstart="(e) => handleDragStart(e, el)"
+        :uniqueKey="el.id"
         :key="el.id"
         :is="el.componentName"
         :style="el.style"
@@ -33,92 +35,38 @@
 </template>
 
 <script>
-let componentId = 1;
 export default {
   name: "HomeView",
   data() {
     return {
       mode: "preview", // preview, online
-      widgets: [
-        {
-          id: 0,
-          label: "图片组件",
-          componentName: "image-widget",
-          icon: require("../assets/image-icon.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-        {
-          id: 0,
-          label: "文本组件",
-          componentName: "text-widget",
-          icon: require("../assets/text-icon.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-        {
-          id: 0,
-          label: "自由容器",
-          componentName: "freedom-container",
-          icon: require("../assets/freedom-container.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-        {
-          id: 0,
-          label: "Flex容器",
-          componentName: "flex-container",
-          icon: require("../assets/flex-container.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-        {
-          id: 0,
-          label: "Section容器",
-          componentName: "section-container",
-          icon: require("../assets/section-container.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-        {
-          id: 0,
-          label: "Main容器",
-          componentName: "main-container",
-          icon: require("../assets/main-container.svg"),
-          dragEnd: false, // 是否已经在容器内
-          style: {
-            position: "absolute",
-            top: "0px",
-            left: "0px",
-          },
-        },
-      ],
       mouseInEleX: 0,
       mouseInEleY: 0,
-      componentData: [],
     };
   },
   methods: {
+    handleDrop(e) {
+      e.preventDefault();
+      const transferData = JSON.parse(
+        e.dataTransfer.getData("application/json")
+      );
+      const hasExist = this.$store.state.componentData.some(
+        (item) =>
+          item.id === transferData.id &&
+          item.componentName === transferData.componentName
+      );
+      if (!hasExist) {
+        const component = this.$store.state.widgets.find(
+          (item) => item.componentName === transferData.componentName
+        );
+        const componentOpt = Object.assign({}, component);
+        componentOpt.id = transferData.id;
+        this.$store.state.componentData.push(componentOpt);
+      }
+    },
+    handleDragOver(e) {
+      e.preventDefault();
+    },
     handleDragStart(e, widgetItem) {
       // 记录当前拖动元素的鼠标在元素内的位置
       this.mouseInEleX = e.pageX - e.currentTarget.getBoundingClientRect().x;
@@ -128,57 +76,11 @@ export default {
       e.dataTransfer.setData("text/plain", widgetItem.componentName);
       const data = {
         componentName: widgetItem.componentName,
-        id: widgetItem.id,
+        id: `${widgetItem.id}-${
+          widgetItem.componentName
+        }-${new Date().getTime()}`,
       };
       e.dataTransfer.setData("application/json", JSON.stringify(data));
-    },
-    handleDragOver(e) {
-      e.preventDefault();
-    },
-    handleDrop(e) {
-      e.preventDefault();
-      const transferData = JSON.parse(
-        e.dataTransfer.getData("application/json")
-      );
-      console.log("transferData", transferData);
-      const hasExist = this.componentData.some(
-        (item) =>
-          item.id === transferData.id &&
-          item.componentName === transferData.componentName
-      );
-      if (!hasExist) {
-        const component = this.widgets.find(
-          (item) => item.componentName === transferData.componentName
-        );
-        if (component) {
-          const componentOpt = Object.assign({}, component);
-          componentOpt.id = componentId++;
-          // 重新定义拖拽元素在容器内释放的位置
-          const positionX =
-            e.pageX - this.$refs.displayContainer.offsetLeft - this.mouseInEleX;
-          const positionY =
-            e.pageY - this.$refs.displayContainer.offsetTop - this.mouseInEleY;
-          componentOpt.style = {
-            ...component.style,
-            top: `${positionY}px`,
-            left: `${positionX}px`,
-          };
-          this.componentData.push(componentOpt);
-        }
-      } else {
-        const positionX =
-          e.pageX - this.$refs.displayContainer.offsetLeft - this.mouseInEleX;
-        const positionY =
-          e.pageY - this.$refs.displayContainer.offsetTop - this.mouseInEleY;
-        const component = this.componentData.find(
-          (item) => item.id === transferData.id
-        );
-        component.style = {
-          ...component.style,
-          top: `${positionY}px`,
-          left: `${positionX}px`,
-        };
-      }
     },
   },
 };

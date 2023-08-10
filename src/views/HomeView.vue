@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 export default {
   name: "HomeView",
   data() {
@@ -59,9 +60,12 @@ export default {
         const component = this.$store.state.widgets.find(
           (item) => item.componentName === transferData.componentName
         );
-        const componentOpt = Object.assign({}, component);
+        const componentOpt = _.cloneDeep(component);
         componentOpt.id = transferData.id;
-        this.$store.state.componentData.push(componentOpt);
+        this.$store.dispatch("addComponent", {
+          id: null,
+          component: componentOpt,
+        });
       }
     },
     handleDragOver(e) {

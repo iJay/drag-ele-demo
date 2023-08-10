@@ -62,12 +62,16 @@ export default new Vuex.Store({
   mutations: {
     // 添加组件
     addComponent(state, componentMetaData) {
-      // 1.根据id找到对应的组件
-      const parentComponent = state.componentData.find(
-        (item) => item.id === componentMetaData.id
-      );
-      // 2.将组件添加到对应的组件中
-      parentComponent.children.push(componentMetaData.component);
+      // 1.根据id找到对应的父组件
+      if (componentMetaData.id) {
+        const parentComponent = state.componentData.find(
+          (item) => item.id === componentMetaData.id
+        );
+        // 2.将组件添加到对应的组件中
+        parentComponent.children.push(componentMetaData.component);
+      } else {
+        state.componentData.push(componentMetaData.component);
+      }
     },
   },
   actions: {

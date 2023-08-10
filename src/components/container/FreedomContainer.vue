@@ -12,6 +12,7 @@
       :class="['drag-element']"
       draggable="true"
       @dragstart="(e) => handleDragStart(e, el)"
+      :uniqueKey="el.id"
       :key="el.id"
       :is="el.componentName"
       :style="el.style"
@@ -20,6 +21,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 export default {
   name: "FreedomConatiner",
   props: {
@@ -70,15 +72,23 @@ export default {
           (item) => item.componentName === transferData.componentName
         );
         if (component) {
-          const componentOpt = Object.assign({}, component);
+          const componentOpt = _.cloneDeep(component);
           componentOpt.id = `${componentOpt.id}-${
             componentOpt.componentName
           }-${new Date().getTime()}`;
           // 重新定义拖拽元素在容器内释放的位置
+          console.log(
+            "this.$refs.freedomContainer.offsetLeft: " +
+              this.$refs.freedomContainer.getBoundingClientRect().x
+          );
           const positionX =
-            e.pageX - this.$refs.freedomContainer.offsetLeft - this.mouseInEleX;
+            e.pageX -
+            this.$refs.freedomContainer.getBoundingClientRect().x -
+            this.mouseInEleX;
           const positionY =
-            e.pageY - this.$refs.freedomContainer.offsetTop - this.mouseInEleY;
+            e.pageY -
+            this.$refs.freedomContainer.getBoundingClientRect().y -
+            this.mouseInEleY;
           componentOpt.style = {
             ...component.style,
             position: "absolute",
@@ -112,7 +122,7 @@ export default {
 <style lang="scss">
 .freedom-container {
   width: 100%;
-  height: 200px;
+  height: 350px;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 4px;

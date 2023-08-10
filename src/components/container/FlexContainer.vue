@@ -28,7 +28,7 @@ export default {
 <style lang="scss">
 .flex-container {
   width: 100%;
-  min-height: 160px;
+  height: 200px;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 4px;

@@ -22,6 +22,7 @@
 
 <script>
 import _ from "lodash";
+import getWidgetInitAttr from "@/config/widgetInitAttr.js";
 export default {
   name: "FreedomConatiner",
   props: {
@@ -36,26 +37,34 @@ export default {
   },
   data() {
     return {
-      mouseInEleX: 0,
-      mouseInEleY: 0,
+      mouseInDragEndEleX: 0,
+      mouseInDragEndEleY: 0,
     };
   },
   methods: {
     handleDragOver(e) {
       e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
     },
     handleDragStart(e, widgetItem) {
       e.stopPropagation();
       // 记录当前拖动元素的鼠标在元素内的位置
-      this.mouseInEleX = e.pageX - e.currentTarget.getBoundingClientRect().x;
-      this.mouseInEleY = e.pageY - e.currentTarget.getBoundingClientRect().y;
-      console.log(this.mouseInEleX, this.mouseInEleY);
+      this.mouseInDragEndEleX = this.$store.state.coordinate.mouseInEleX;
+      this.mouseInDragEndEleY = this.$store.state.coordinate.mouseInEleY;
       e.dataTransfer.effectAllowed = "copy";
       e.dataTransfer.setData("text/plain", widgetItem.componentName);
-      const data = {
-        componentName: widgetItem.componentName,
-        id: widgetItem.id + widgetItem.componentName,
-      };
+      let data;
+      if (!widgetItem.id) {
+        data = {
+          componentName: widgetItem.componentName,
+          id: widgetItem.id + widgetItem.componentName,
+        };
+      } else {
+        data = {
+          componentName: widgetItem.componentName,
+          id: widgetItem.id,
+        };
+      }
       e.dataTransfer.setData("application/json", JSON.stringify(data));
     },
     handleDrop(e) {
@@ -64,33 +73,33 @@ export default {
       const transferData = JSON.parse(
         e.dataTransfer.getData("application/json")
       );
-      const hasExist = this.componentData.some(
+      const hasExistComponent = this.componentData.find(
         (item) => item.id === transferData.id
       );
-      if (!hasExist) {
-        const component = this.$store.state.widgets.find(
-          (item) => item.componentName === transferData.componentName
-        );
-        if (component) {
-          const componentOpt = _.cloneDeep(component);
+      console.log("hasExistComponent", hasExistComponent);
+      const widget = this.$store.state.widgets.find(
+        (item) => item.componentName === transferData.componentName
+      );
+      if (!hasExistComponent) {
+        if (widget) {
+          const componentOpt = _.cloneDeep(widget);
           componentOpt.id = `${componentOpt.id}-${
             componentOpt.componentName
           }-${new Date().getTime()}`;
           // 重新定义拖拽元素在容器内释放的位置
-          console.log(
-            "this.$refs.freedomContainer.offsetLeft: " +
-              this.$refs.freedomContainer.getBoundingClientRect().x
-          );
+          // 这里的元素宽高需要给每一个组件一个初始值，放在widget属性里面
+          const { initWidth, initHeight } =
+            getWidgetInitAttr()[componentOpt.componentName];
           const positionX =
             e.pageX -
             this.$refs.freedomContainer.getBoundingClientRect().x -
-            this.mouseInEleX;
+            this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
           const positionY =
             e.pageY -
             this.$refs.freedomContainer.getBoundingClientRect().y -
-            this.mouseInEleY;
+            this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
           componentOpt.style = {
-            ...component.style,
+            ...widget.style,
             position: "absolute",
             top: `${positionY}px`,
             left: `${positionX}px`,
@@ -101,19 +110,29 @@ export default {
           });
         }
       } else {
+        // 重新定义拖拽元素在容器内释放的位置
+        // 这里的元素宽高需要给每一个组件一个初始值，放在widget属性里面
+        const { initWidth, initHeight } =
+          getWidgetInitAttr()[hasExistComponent.componentName];
         const positionX =
-          e.pageX - this.$refs.freedomContainer.offsetLeft - this.mouseInEleX;
+          e.pageX -
+          this.$refs.freedomContainer.getBoundingClientRect().x -
+          this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
         const positionY =
-          e.pageY - this.$refs.freedomContainer.offsetTop - this.mouseInEleY;
-        const component = this.componentData.find(
-          (item) => item.id === transferData.id
-        );
-        component.style = {
-          ...component.style,
+          e.pageY -
+          this.$refs.freedomContainer.getBoundingClientRect().y -
+          this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
+        hasExistComponent.style = {
+          ...widget.style,
           position: "absolute",
           top: `${positionY}px`,
           left: `${positionX}px`,
         };
+        // 修改组件属性
+        this.$store.dispatch("changeComponentAttr", {
+          id: hasExistComponent.id,
+          component: hasExistComponent,
+        });
       }
     },
   },
@@ -122,7 +141,7 @@ export default {
 <style lang="scss">
 .freedom-container {
   width: 100%;
-  height: 350px;
+  height: 200px;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 4px;

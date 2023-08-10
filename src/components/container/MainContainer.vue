@@ -22,7 +22,7 @@ export default {
 <style lang="scss">
 .main-container {
   width: 100%;
-  min-height: 100px;
+  height: 200px;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   border-radius: 4px;

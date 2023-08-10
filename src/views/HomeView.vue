@@ -41,8 +41,6 @@ export default {
   data() {
     return {
       mode: "preview", // preview, online
-      mouseInEleX: 0,
-      mouseInEleY: 0,
     };
   },
   methods: {
@@ -57,10 +55,10 @@ export default {
           item.componentName === transferData.componentName
       );
       if (!hasExist) {
-        const component = this.$store.state.widgets.find(
+        const widget = this.$store.state.widgets.find(
           (item) => item.componentName === transferData.componentName
         );
-        const componentOpt = _.cloneDeep(component);
+        const componentOpt = _.cloneDeep(widget);
         componentOpt.id = transferData.id;
         this.$store.dispatch("addComponent", {
           id: null,
@@ -70,12 +68,20 @@ export default {
     },
     handleDragOver(e) {
       e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
     },
     handleDragStart(e, widgetItem) {
       // 记录当前拖动元素的鼠标在元素内的位置
-      this.mouseInEleX = e.pageX - e.currentTarget.getBoundingClientRect().x;
-      this.mouseInEleY = e.pageY - e.currentTarget.getBoundingClientRect().y;
-      console.log(this.mouseInEleX, this.mouseInEleY);
+      const mouseInEleX =
+        (e.pageX - e.currentTarget.getBoundingClientRect().x) /
+        e.currentTarget.getBoundingClientRect().width;
+      const mouseInEleY =
+        (e.pageY - e.currentTarget.getBoundingClientRect().y) /
+        e.currentTarget.getBoundingClientRect().height;
+      this.$store.dispatch("changeCoordinate", {
+        mouseInEleX,
+        mouseInEleY,
+      });
       e.dataTransfer.effectAllowed = "copy";
       e.dataTransfer.setData("text/plain", widgetItem.componentName);
       const data = {

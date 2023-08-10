@@ -3,8 +3,24 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
+// 遍历组件树
+function findComponent(componentData, componentMetaData) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === componentMetaData.id) {
+      componentData[i] = componentMetaData.component;
+      break;
+    } else {
+      findComponent(componentData[i].children);
+    }
+  }
+}
+
 export default new Vuex.Store({
   state: {
+    coordinate: {
+      mouseInEleX: 0,
+      mouseInEleY: 0,
+    },
     componentData: [],
     widgets: [
       {
@@ -28,7 +44,9 @@ export default new Vuex.Store({
         label: "自由容器",
         componentName: "freedom-container",
         icon: require("../assets/freedom-container.svg"),
-        style: {},
+        style: {
+          position: "relative",
+        },
         children: [],
       },
       {
@@ -73,11 +91,25 @@ export default new Vuex.Store({
         state.componentData.push(componentMetaData.component);
       }
     },
+    // 修改组件属性
+    changeComponentAttr(state, componentMetaData) {
+      findComponent(state.componentData, componentMetaData);
+    },
+    // 修改拖拽初始化坐标
+    changeCoordinate(state, coordinate) {
+      state.coordinate = coordinate;
+    },
   },
   actions: {
     // 添加组件
     addComponent({ commit }, componentMetaData) {
       commit("addComponent", componentMetaData);
+    },
+    changeCoordinate({ commit }, coordinate) {
+      commit("changeCoordinate", coordinate);
+    },
+    changeComponentAttr({ commit }, componentMetaData) {
+      commit("changeComponentAttr", componentMetaData);
     },
   },
   modules: {},

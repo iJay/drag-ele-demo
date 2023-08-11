@@ -44,6 +44,28 @@ function resetComponentSelected(componentData) {
   }
 }
 
+function moveToTop(componentData, id) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === id) {
+      componentData.splice(i, 1);
+      // 上移到前一个位置
+      componentData.splice(i - 1, 0, componentData[i]);
+      break;
+    }
+  }
+}
+
+function moveToBottom(componentData, id) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === id) {
+      componentData.splice(i, 1);
+      // 下移到后一个位置
+      componentData.splice(i + 1, 0, componentData[i]);
+      break;
+    }
+  }
+}
+
 export default new Vuex.Store({
   state: {
     coordinate: {
@@ -81,33 +103,33 @@ export default new Vuex.Store({
         },
         children: [],
       },
-      {
-        id: 0,
-        label: "Flex容器",
-        componentName: "flex-container",
-        icon: require("../assets/flex-container.svg"),
-        selected: false,
-        style: {},
-        children: [],
-      },
-      {
-        id: 0,
-        label: "Section容器",
-        componentName: "section-container",
-        icon: require("../assets/section-container.svg"),
-        selected: false,
-        style: {},
-        children: [],
-      },
-      {
-        id: 0,
-        label: "Main容器",
-        componentName: "main-container",
-        icon: require("../assets/main-container.svg"),
-        selected: false,
-        style: {},
-        children: [],
-      },
+      // {
+      //   id: 0,
+      //   label: "Flex容器",
+      //   componentName: "flex-container",
+      //   icon: require("../assets/flex-container.svg"),
+      //   selected: false,
+      //   style: {},
+      //   children: [],
+      // },
+      // {
+      //   id: 0,
+      //   label: "Section容器",
+      //   componentName: "section-container",
+      //   icon: require("../assets/section-container.svg"),
+      //   selected: false,
+      //   style: {},
+      //   children: [],
+      // },
+      // {
+      //   id: 0,
+      //   label: "Main容器",
+      //   componentName: "main-container",
+      //   icon: require("../assets/main-container.svg"),
+      //   selected: false,
+      //   style: {},
+      //   children: [],
+      // },
     ],
   },
   getters: {},
@@ -142,6 +164,12 @@ export default new Vuex.Store({
     deleteComponent(state, id) {
       deleteComponentById(state.componentData, id);
     },
+    moveToTop(state, id) {
+      moveToTop(state.componentData, id);
+    },
+    moveToBottom(state, id) {
+      moveToBottom(state.componentData, id);
+    },
   },
   actions: {
     // 添加组件
@@ -160,6 +188,12 @@ export default new Vuex.Store({
     // 删除组件
     deleteComponent({ commit }, id) {
       commit("deleteComponent", id);
+    },
+    moveToTop({ commit }, id) {
+      commit("moveToTop", id);
+    },
+    moveToBottom({ commit }, id) {
+      commit("moveToBottom", id);
     },
   },
   modules: {},

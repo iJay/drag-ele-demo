@@ -117,7 +117,7 @@ export default {
     ul {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       list-style: none;
       padding: 0;

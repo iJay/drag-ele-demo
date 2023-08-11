@@ -9,6 +9,10 @@
     @click="$listeners.click"
   >
     <i class="delete-icon" v-if="selected" @click="handleDeleteItem">删除</i>
+    <i class="top-arrow-icon" v-if="selected" @click="handleMoveToTop">上移</i>
+    <i class="bottom-arrow-icon" v-if="selected" @click="handleMoveToBottom">
+      下移
+    </i>
     <i class="setting-icon" v-if="selected">设置</i>
     <component
       v-for="el in componentData"
@@ -56,6 +60,12 @@ export default {
     },
     handleDeleteItem() {
       this.$store.dispatch("deleteComponent", this.uniqueKey);
+    },
+    handleMoveToTop() {
+      this.$store.dispatch("moveToTop", this.uniqueKey);
+    },
+    handleMoveToBottom() {
+      this.$store.dispatch("moveToBottom", this.uniqueKey);
     },
     handleDragStart(e, widgetItem) {
       e.stopPropagation();
@@ -177,6 +187,28 @@ export default {
       position: absolute;
       bottom: 0;
       right: 46px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+
+    .top-arrow-icon {
+      position: absolute;
+      bottom: 0;
+      right: 138px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+
+    .bottom-arrow-icon {
+      position: absolute;
+      bottom: 0;
+      right: 92px;
       padding: 4px 8px;
       font-size: 12px;
       color: #fff;

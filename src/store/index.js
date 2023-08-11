@@ -15,6 +15,35 @@ function findComponent(componentData, componentMetaData) {
   }
 }
 
+function handleComponentSelected(componentData, id) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === id) {
+      componentData[i].selected = true;
+      break;
+    } else {
+      handleComponentSelected(componentData[i].children);
+    }
+  }
+}
+
+function deleteComponentById(componentData, id) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === id) {
+      componentData.splice(i, 1);
+      break;
+    } else {
+      deleteComponentById(componentData[i].children);
+    }
+  }
+}
+
+function resetComponentSelected(componentData) {
+  for (let i = 0; i < componentData.length; i++) {
+    componentData[i].selected = false;
+    resetComponentSelected(componentData[i].children);
+  }
+}
+
 export default new Vuex.Store({
   state: {
     coordinate: {
@@ -28,6 +57,7 @@ export default new Vuex.Store({
         label: "图片组件",
         componentName: "image-widget",
         icon: require("../assets/image-icon.svg"),
+        selected: false,
         style: {},
         children: [],
       },
@@ -36,6 +66,7 @@ export default new Vuex.Store({
         label: "文本组件",
         componentName: "text-widget",
         icon: require("../assets/text-icon.svg"),
+        selected: false,
         style: {},
         children: [],
       },
@@ -44,6 +75,7 @@ export default new Vuex.Store({
         label: "自由容器",
         componentName: "freedom-container",
         icon: require("../assets/freedom-container.svg"),
+        selected: false,
         style: {
           position: "relative",
         },
@@ -54,6 +86,7 @@ export default new Vuex.Store({
         label: "Flex容器",
         componentName: "flex-container",
         icon: require("../assets/flex-container.svg"),
+        selected: false,
         style: {},
         children: [],
       },
@@ -62,6 +95,7 @@ export default new Vuex.Store({
         label: "Section容器",
         componentName: "section-container",
         icon: require("../assets/section-container.svg"),
+        selected: false,
         style: {},
         children: [],
       },
@@ -70,7 +104,7 @@ export default new Vuex.Store({
         label: "Main容器",
         componentName: "main-container",
         icon: require("../assets/main-container.svg"),
-        dragEnd: false, // 是否已经在容器内
+        selected: false,
         style: {},
         children: [],
       },
@@ -99,6 +133,15 @@ export default new Vuex.Store({
     changeCoordinate(state, coordinate) {
       state.coordinate = coordinate;
     },
+    // 修改选中组件
+    changeSelected(state, data) {
+      resetComponentSelected(state.componentData);
+      handleComponentSelected(state.componentData, data.id, data.selected);
+    },
+    // 删除组件
+    deleteComponent(state, id) {
+      deleteComponentById(state.componentData, id);
+    },
   },
   actions: {
     // 添加组件
@@ -110,6 +153,13 @@ export default new Vuex.Store({
     },
     changeComponentAttr({ commit }, componentMetaData) {
       commit("changeComponentAttr", componentMetaData);
+    },
+    changeSelected({ commit }, data) {
+      commit("changeSelected", data);
+    },
+    // 删除组件
+    deleteComponent({ commit }, id) {
+      commit("deleteComponent", id);
     },
   },
   modules: {},

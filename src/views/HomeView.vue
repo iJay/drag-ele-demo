@@ -23,8 +23,10 @@
         v-for="el in $store.state.componentData"
         :componentData="el.children"
         :class="['drag-element']"
+        :selected="el.selected"
         draggable="true"
         @dragstart="(e) => handleDragStart(e, el)"
+        @click="(e) => handleClick(e, el)"
         :uniqueKey="el.id"
         :key="el.id"
         :is="el.componentName"
@@ -44,6 +46,13 @@ export default {
     };
   },
   methods: {
+    handleClick(e, el) {
+      e.stopPropagation();
+      this.$store.dispatch("changeSelected", {
+        id: el.id,
+        selected: !el.selected,
+      });
+    },
     handleDrop(e) {
       e.preventDefault();
       const transferData = JSON.parse(

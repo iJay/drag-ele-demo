@@ -1,11 +1,15 @@
 <template>
   <div
     class="freedom-container"
+    :class="[selected ? 'selected' : '']"
     ref="freedomContainer"
     @dragover="handleDragOver"
     @dragstart="$listeners.dragstart"
     @drop="handleDrop"
+    @click="$listeners.click"
   >
+    <i class="delete-icon" v-if="selected" @click="handleDeleteItem">删除</i>
+    <i class="setting-icon" v-if="selected">设置</i>
     <component
       v-for="el in componentData"
       :componentData="el.children"
@@ -26,6 +30,10 @@ import getWidgetInitAttr from "@/config/widgetInitAttr.js";
 export default {
   name: "FreedomConatiner",
   props: {
+    selected: {
+      type: Boolean,
+      default: false,
+    },
     uniqueKey: {
       type: String || Number,
       required: true,
@@ -45,6 +53,9 @@ export default {
     handleDragOver(e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
+    },
+    handleDeleteItem() {
+      this.$store.dispatch("deleteComponent", this.uniqueKey);
     },
     handleDragStart(e, widgetItem) {
       e.stopPropagation();
@@ -147,5 +158,31 @@ export default {
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+
+  &.selected {
+    border: 1px dashed #409eff;
+
+    .delete-icon {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #f56c6c;
+      cursor: pointer;
+    }
+
+    .setting-icon {
+      position: absolute;
+      bottom: 0;
+      right: 46px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+  }
 }
 </style>

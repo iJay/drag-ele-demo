@@ -62,8 +62,7 @@ export default {
   },
   mounted() {
     this.hRuleStyle.width = window.innerWidth - 20;
-    console.log(this.hRuleStyle.width);
-    this.vRuleStyle.height = window.innerHeight - 80;
+    this.vRuleStyle.height = window.innerHeight * 4;
     this.$nextTick(() => {
       this.drawRule();
     });
@@ -188,6 +187,7 @@ export default {
       background: #fff;
       box-sizing: border-box;
       padding-left: 20px;
+      overflow: hidden;
     }
 
     .v-rule {
@@ -199,6 +199,7 @@ export default {
       background: #fff;
       box-sizing: border-box;
       padding-top: 20px;
+      overflow: hidden;
     }
   }
 }

@@ -3,6 +3,11 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+
+Vue.use(ElementUI);
+
 // 全局注册组件
 Vue.component("image-widget", () =>
   import("./components/widget/ImageWidget.vue")

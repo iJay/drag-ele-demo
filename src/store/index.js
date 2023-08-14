@@ -37,6 +37,7 @@ function deleteComponentById(componentData, id) {
   }
 }
 
+// 重置所有组件的选中状态 为false
 function resetComponentSelected(componentData) {
   for (let i = 0; i < componentData.length; i++) {
     componentData[i].selected = false;
@@ -44,23 +45,26 @@ function resetComponentSelected(componentData) {
   }
 }
 
+// 上移
 function moveToTop(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
-      componentData.splice(i, 1);
+      const deleteItem = componentData.splice(i, 1);
       // 上移到前一个位置
-      componentData.splice(i - 1, 0, componentData[i]);
+      componentData.splice(i - 1, 0, deleteItem[0]);
+      console.log(componentData);
       break;
     }
   }
 }
 
+// 下移
 function moveToBottom(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
-      componentData.splice(i, 1);
+      const deleteItem = componentData.splice(i, 1);
       // 下移到后一个位置
-      componentData.splice(i + 1, 0, componentData[i]);
+      componentData.splice(i + 1, 0, deleteItem[0]);
       break;
     }
   }

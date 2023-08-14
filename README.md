@@ -1,24 +1,7 @@
 # drag-ele-demo
+## 截止到2023年8月18日需要完成的功能点
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- 抽象出一个组件用于显示上移（仅限容器组件）、下移（仅限容器组件）、删除、设置、拖拽等功能。
+- 容器与容器之间的内部组件可以相互拖拽而不是复制。
+- 最外层容器只接受新增三种容器。flex容器，freedom容器、div容器，且最外层容器之间不能拖拽。
+- 三种容器组件可以设置容器的编号（自动生成的id）、名称、宽、高、背景色（图）、是否固定到窗口等属性。

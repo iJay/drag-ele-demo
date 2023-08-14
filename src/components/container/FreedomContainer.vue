@@ -3,8 +3,8 @@
     class="freedom-container"
     :class="[selected ? 'selected' : '']"
     ref="freedomContainer"
-    @dragover="handleDragOver"
     @dragstart="$listeners.dragstart"
+    @dragover="handleDragOver"
     @drop="handleDrop"
     @click="$listeners.click"
   >

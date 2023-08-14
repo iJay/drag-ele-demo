@@ -24,14 +24,23 @@
         :componentData="el.children"
         :class="['drag-element']"
         :selected="el.selected"
-        draggable="true"
-        @dragstart="(e) => handleDragStart(e, el)"
         @click="(e) => handleClick(e, el)"
+        @dragstart="(e) => handleDragStart(e, el)"
         :uniqueKey="el.id"
         :key="el.id"
         :is="el.componentName"
         :style="el.style"
       ></component>
+      <div class="btn-group">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="() => handleAddContainerComponent('freedom-container')"
+        >
+          添加
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -46,6 +55,17 @@ export default {
     };
   },
   methods: {
+    handleAddContainerComponent(componentName) {
+      const widget = this.$store.state.widgets.find(
+        (item) => item.componentName === componentName
+      );
+      const componentOpt = _.cloneDeep(widget);
+      componentOpt.id = `${widget.id}-${componentName}-${new Date().getTime()}`;
+      this.$store.dispatch("addComponent", {
+        id: null,
+        component: componentOpt,
+      });
+    },
     handleClick(e, el) {
       e.stopPropagation();
       this.$store.dispatch("changeSelected", {
@@ -150,6 +170,10 @@ export default {
     margin: 20px;
     position: relative;
     overflow: hidden;
+
+    .btn-group {
+      margin-top: 32px;
+    }
 
     .drag-element {
       cursor: move;

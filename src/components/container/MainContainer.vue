@@ -45,7 +45,7 @@ export default {
 .main-container {
   width: 100%;
   margin: 0 auto;
-  min-height: calc(100vh - 63px);
+  min-height: calc(100vh - 83px);
   height: auto;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;

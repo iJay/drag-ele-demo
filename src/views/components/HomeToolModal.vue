@@ -8,16 +8,22 @@
         @click="$emit('close')"
       ></i>
     </header>
-    <ul>
-      <li
-        draggable="true"
-        @dragstart="(e) => handleDragStart(e, item)"
-        v-for="item in widgets"
-        :key="item.label"
-      >
-        <img :src="item.icon" :alt="item.label" />
-      </li>
-    </ul>
+    <section>
+      <h4>组件</h4>
+      <ul>
+        <li
+          draggable="true"
+          @dragstart="(e) => handleDragStart(e, item)"
+          v-for="item in widgets"
+          :key="item.label"
+        >
+          <img :src="item.icon" :alt="item.label" />
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h4>容器</h4>
+    </section>
   </div>
 </template>
 
@@ -54,6 +60,7 @@ export default {
         componentName: widgetItem.componentName,
         id: generateId(),
       };
+      console.log(data);
       e.dataTransfer.setData("application/json", JSON.stringify(data));
     },
   },
@@ -70,12 +77,21 @@ export default {
   background: #eee;
   z-index: 199;
   box-sizing: border-box;
-  padding: 24px;
+  border: 1px solid #ccc;
 
   & > header {
     display: flex;
+    height: 48px;
+    box-sizing: border-box;
+    padding: 0 12px;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+  }
+
+  & > section {
+    box-sizing: border-box;
+    padding: 16px;
   }
 
   ul {

@@ -164,7 +164,7 @@ export default new Vuex.Store({
         parentComponent.children.push(componentMetaData.component);
       } else {
         // 3.如果没有parentId 说明是根组件 直接添加到根组件中
-        componentMetaData.id = generateId();
+        componentMetaData.component.id = generateId();
         state.componentData.push(componentMetaData.component);
       }
     },

@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 export default {
   props: {
     componentData: {
@@ -28,8 +29,26 @@ export default {
   methods: {
     handleDrop(e) {
       e.preventDefault();
-      const data = e.dataTransfer.getData("dragData");
-      console.log(data);
+      debugger;
+      const transferData = JSON.parse(
+        e.dataTransfer.getData("application/json")
+      );
+      const hasExist = this.$store.state.componentData.some(
+        (item) =>
+          item.id === transferData.id &&
+          item.componentName === transferData.componentName
+      );
+      if (!hasExist) {
+        const widget = this.$store.state.widgets.find(
+          (item) => item.componentName === transferData.componentName
+        );
+        const componentOpt = _.cloneDeep(widget);
+        componentOpt.id = transferData.id;
+        this.$store.dispatch("addComponent", {
+          parentId: this.componentData.id,
+          component: componentOpt,
+        });
+      }
     },
     handleDragOver(e) {
       e.preventDefault();

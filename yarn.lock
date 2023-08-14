@@ -4292,6 +4292,11 @@
   "resolved" "https://registry.npmmirror.com/nanoid/-/nanoid-3.3.6.tgz"
   "version" "3.3.6"
 
+"nanoid@^4.0.2":
+  "integrity" "sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw=="
+  "resolved" "https://registry.npmmirror.com/nanoid/-/nanoid-4.0.2.tgz"
+  "version" "4.0.2"
+
 "natural-compare@^1.4.0":
   "integrity" "sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw=="
   "resolved" "https://registry.npmmirror.com/natural-compare/-/natural-compare-1.4.0.tgz"
@@ -5154,6 +5159,11 @@
   "integrity" "sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ=="
   "resolved" "https://registry.npmmirror.com/requires-port/-/requires-port-1.0.0.tgz"
   "version" "1.0.0"
+
+"reset-css@^5.0.2":
+  "integrity" "sha512-YtgUGSq5z5W0NPSjsBW7ys7rtWa8P8AiE7S6Fg3d1TQCPpAodgYyLuZYlU0AOsLtprk/fC9ormHN/0pAavVIDw=="
+  "resolved" "https://registry.npmmirror.com/reset-css/-/reset-css-5.0.2.tgz"
+  "version" "5.0.2"
 
 "resize-observer-polyfill@^1.5.0":
   "integrity" "sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg=="

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { generateId } from "../utils";
 
 Vue.use(Vuex);
 
@@ -11,6 +12,17 @@ function findComponent(componentData, componentMetaData) {
       break;
     } else {
       findComponent(componentData[i].children, componentMetaData);
+    }
+  }
+}
+
+// 根据id查询相应组件 并返回该组件
+function findComponentById(componentData, id) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === id) {
+      return componentData[i];
+    } else {
+      findComponentById(componentData[i].children, id);
     }
   }
 }
@@ -143,13 +155,16 @@ export default new Vuex.Store({
     // 添加组件
     addComponent(state, componentMetaData) {
       // 1.根据id找到对应的父组件
-      if (componentMetaData.id) {
-        const parentComponent = state.componentData.find(
-          (item) => item.id === componentMetaData.id
+      if (componentMetaData.parentId) {
+        const parentComponent = findComponentById(
+          state.componentData,
+          componentMetaData.parentId
         );
-        // 2.将组件添加到对应的组件中
+        // 2.将组件添加到父组件的children中
         parentComponent.children.push(componentMetaData.component);
       } else {
+        // 3.如果没有parentId 说明是根组件 直接添加到根组件中
+        componentMetaData.id = generateId();
         state.componentData.push(componentMetaData.component);
       }
     },

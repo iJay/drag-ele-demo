@@ -1,183 +1,81 @@
 <template>
   <div class="home">
-    <div class="widget-container">
-      <ul>
-        <li
-          draggable="true"
-          @dragstart="(e) => handleDragStart(e, item)"
-          v-for="item in $store.state.widgets"
-          :key="item.label"
-        >
-          <img :src="item.icon" alt="" />
-          <span>{{ item.label }}</span>
-        </li>
-      </ul>
-    </div>
-    <div
-      class="display-container"
-      ref="displayContainer"
-      @dragover="handleDragOver"
-      @drop="handleDrop"
-    >
-      <component
-        v-for="el in $store.state.componentData"
-        :componentData="el.children"
-        :class="['drag-element']"
-        :selected="el.selected"
-        @click="(e) => handleClick(e, el)"
-        @dragstart="(e) => handleDragStart(e, el)"
-        :uniqueKey="el.id"
-        :key="el.id"
-        :is="el.componentName"
-        :style="el.style"
-      ></component>
-      <div class="btn-group">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="() => handleAddContainerComponent('freedom-container')"
-        >
-          添加
-        </el-button>
+    <div class="header">
+      <div class="left">
+        <h2>门户低代码开发平台</h2>
+        <div class="btn-group">
+          <el-button type="text" size="mini" icon="el-icon-document">
+            页面管理
+          </el-button>
+          <el-button type="text" size="mini" icon="el-icon-s-cooperation">
+            工具箱
+          </el-button>
+        </div>
       </div>
+      <div class="right">
+        <div class="btn-group">
+          <el-button size="mini"> 撤销 </el-button>
+          <el-button size="mini"> 恢复 </el-button>
+          <el-button type="primary" size="mini"> 保存 </el-button>
+          <el-button size="mini"> 预览 </el-button>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <HomeEditor />
     </div>
   </div>
 </template>
 
 <script>
-import _ from "lodash";
+import HomeEditor from "./components/HomeEditor.vue";
 export default {
   name: "HomeView",
-  data() {
-    return {
-      mode: "preview", // preview, online
-    };
-  },
-  methods: {
-    handleAddContainerComponent(componentName) {
-      const widget = this.$store.state.widgets.find(
-        (item) => item.componentName === componentName
-      );
-      const componentOpt = _.cloneDeep(widget);
-      componentOpt.id = `${widget.id}-${componentName}-${new Date().getTime()}`;
-      this.$store.dispatch("addComponent", {
-        id: null,
-        component: componentOpt,
-      });
-    },
-    handleClick(e, el) {
-      e.stopPropagation();
-      this.$store.dispatch("changeSelected", {
-        id: el.id,
-        selected: !el.selected,
-      });
-    },
-    handleDrop(e) {
-      e.preventDefault();
-      const transferData = JSON.parse(
-        e.dataTransfer.getData("application/json")
-      );
-      const hasExist = this.$store.state.componentData.some(
-        (item) =>
-          item.id === transferData.id &&
-          item.componentName === transferData.componentName
-      );
-      if (!hasExist) {
-        const widget = this.$store.state.widgets.find(
-          (item) => item.componentName === transferData.componentName
-        );
-        const componentOpt = _.cloneDeep(widget);
-        componentOpt.id = transferData.id;
-        this.$store.dispatch("addComponent", {
-          id: null,
-          component: componentOpt,
-        });
-      }
-    },
-    handleDragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "copy";
-    },
-    handleDragStart(e, widgetItem) {
-      // 记录当前拖动元素的鼠标在元素内的位置
-      const mouseInEleX =
-        (e.pageX - e.currentTarget.getBoundingClientRect().x) /
-        e.currentTarget.getBoundingClientRect().width;
-      const mouseInEleY =
-        (e.pageY - e.currentTarget.getBoundingClientRect().y) /
-        e.currentTarget.getBoundingClientRect().height;
-      this.$store.dispatch("changeCoordinate", {
-        mouseInEleX,
-        mouseInEleY,
-      });
-      e.dataTransfer.effectAllowed = "copy";
-      e.dataTransfer.setData("text/plain", widgetItem.componentName);
-      const data = {
-        componentName: widgetItem.componentName,
-        id: `${widgetItem.id}-${
-          widgetItem.componentName
-        }-${new Date().getTime()}`,
-      };
-      e.dataTransfer.setData("application/json", JSON.stringify(data));
-    },
+  components: {
+    HomeEditor,
   },
 };
 </script>
 <style lang="scss">
 .home {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  .widget-container {
-    flex: 0 0 280px;
+
+  .header {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: flex-start;
-    ul {
+    align-items: center;
+    box-sizing: border-box;
+    height: 60px;
+    padding: 0 32px;
+    border-bottom: 1px solid #ccc;
+
+    .left {
+      flex: 0 0 50%;
+      width: 50%;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
       align-items: center;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      li {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
-        margin: 20px;
+      justify-content: flex-start;
+      .btn-group {
+        width: 200px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        cursor: move;
-
-        img {
-          width: 60px;
-          height: 60px;
-        }
-
-        span {
-          font-size: 12px;
-        }
+        margin-left: 80px;
       }
     }
+
+    .right {
+      flex: 0 0 50%;
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
   }
-  .display-container {
+
+  .main-content {
     flex: 1;
-    background-color: #eee;
-    margin: 20px;
-    position: relative;
-    overflow: hidden;
-
-    .btn-group {
-      margin-top: 32px;
-    }
-
-    .drag-element {
-      cursor: move;
-    }
+    background: url("@/assets/bg-canvas.png");
   }
 }
 </style>

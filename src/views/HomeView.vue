@@ -23,10 +23,18 @@
     </div>
     <div class="main-content">
       <div class="h-rule">
-        <canvas id="h-rule-canvas" width="1488" height="20"></canvas>
+        <canvas
+          id="h-rule-canvas"
+          :width="hRuleStyle.width"
+          :height="hRuleStyle.height"
+        ></canvas>
       </div>
       <div class="v-rule">
-        <canvas id="v-rule-canvas" width="20" height="990"></canvas>
+        <canvas
+          id="v-rule-canvas"
+          :width="vRuleStyle.width"
+          :height="vRuleStyle.height"
+        ></canvas>
       </div>
       <HomeEditor />
     </div>
@@ -37,14 +45,34 @@
 import HomeEditor from "./components/HomeEditor.vue";
 export default {
   name: "HomeView",
+  data() {
+    return {
+      hRuleStyle: {
+        width: 0,
+        height: 20,
+      },
+      vRuleStyle: {
+        width: 20,
+        height: 0,
+      },
+    };
+  },
   components: {
     HomeEditor,
   },
   mounted() {
-    this.drawHRule();
-    this.drawVRule();
+    this.hRuleStyle.width = window.innerWidth - 20;
+    console.log(this.hRuleStyle.width);
+    this.vRuleStyle.height = window.innerHeight - 80;
+    this.$nextTick(() => {
+      this.drawRule();
+    });
   },
   methods: {
+    drawRule() {
+      this.drawHRule();
+      this.drawVRule();
+    },
     drawHRule() {
       // 水平标尺 标尺长度是元素宽度 平均分成N个100像素长度，每个100像素长度的标尺间隔为10像素
       const hRuleCanvas = document.getElementById("h-rule-canvas");
@@ -148,7 +176,8 @@ export default {
     background: url("@/assets/bg-canvas.png");
     position: relative;
     box-sizing: border-box;
-    padding: 20px 0 0 20px;
+    padding: 20px;
+    overflow: scroll;
 
     .h-rule {
       position: absolute;

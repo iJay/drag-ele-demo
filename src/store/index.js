@@ -10,11 +10,12 @@ function findComponent(componentData, componentMetaData) {
       componentData[i] = componentMetaData.component;
       break;
     } else {
-      findComponent(componentData[i].children);
+      findComponent(componentData[i].children, componentMetaData);
     }
   }
 }
 
+// 递归遍历组件树 修改选中状态
 function handleComponentSelected(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
@@ -26,6 +27,7 @@ function handleComponentSelected(componentData, id) {
   }
 }
 
+// 根据id删除组件
 function deleteComponentById(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
@@ -168,9 +170,11 @@ export default new Vuex.Store({
     deleteComponent(state, id) {
       deleteComponentById(state.componentData, id);
     },
+    // 上移
     moveToTop(state, id) {
       moveToTop(state.componentData, id);
     },
+    // 下移
     moveToBottom(state, id) {
       moveToBottom(state.componentData, id);
     },
@@ -180,12 +184,15 @@ export default new Vuex.Store({
     addComponent({ commit }, componentMetaData) {
       commit("addComponent", componentMetaData);
     },
+    // 修改组件定位坐标
     changeCoordinate({ commit }, coordinate) {
       commit("changeCoordinate", coordinate);
     },
+    // 修改组件属性
     changeComponentAttr({ commit }, componentMetaData) {
       commit("changeComponentAttr", componentMetaData);
     },
+    // 修改选中组件
     changeSelected({ commit }, data) {
       commit("changeSelected", data);
     },
@@ -193,9 +200,11 @@ export default new Vuex.Store({
     deleteComponent({ commit }, id) {
       commit("deleteComponent", id);
     },
+    // 上移
     moveToTop({ commit }, id) {
       commit("moveToTop", id);
     },
+    // 下移
     moveToBottom({ commit }, id) {
       commit("moveToBottom", id);
     },

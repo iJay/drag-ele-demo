@@ -59,16 +59,16 @@ export default {
         // 如果是10的倍数，画长一点的标尺 并且标注数字
         if (i % 10 === 0) {
           hRuleCtx.moveTo(i * hRuleInterval, 0);
-          hRuleCtx.lineTo(i * hRuleInterval, 20);
-          hRuleCtx.font = "12px Arial";
+          hRuleCtx.lineTo(i * hRuleInterval, 16);
+          hRuleCtx.font = "10px Arial";
           hRuleCtx.fillStyle = "#000";
-          hRuleCtx.fillText(i * hRuleInterval, i * hRuleInterval, 15);
+          hRuleCtx.fillText(i * hRuleInterval, i * hRuleInterval + 2, 15);
         } else if (i % 5 === 0) {
           hRuleCtx.moveTo(i * hRuleInterval, 0);
-          hRuleCtx.lineTo(i * hRuleInterval, 15);
+          hRuleCtx.lineTo(i * hRuleInterval, 8);
         } else {
           hRuleCtx.moveTo(i * hRuleInterval, 0);
-          hRuleCtx.lineTo(i * hRuleInterval, 10);
+          hRuleCtx.lineTo(i * hRuleInterval, 4);
         }
       }
       hRuleCtx.stroke();
@@ -84,19 +84,21 @@ export default {
       vRuleCtx.lineWidth = 1;
       vRuleCtx.beginPath();
       for (let i = 0; i < parseInt(vRuleCount); i++) {
-        // 如果是10的倍数，画长一点的标尺 并且标注数字
+        // 如果是10的倍数，画长一点的标尺 并且标注数字 标注的数字竖向显示
         if (i % 10 === 0) {
           vRuleCtx.moveTo(0, i * vRuleInterval);
-          vRuleCtx.lineTo(20, i * vRuleInterval);
-          vRuleCtx.font = "12px Arial";
+          vRuleCtx.lineTo(16, i * vRuleInterval);
+          vRuleCtx.save();
+          vRuleCtx.font = "10px Arial";
           vRuleCtx.fillStyle = "#000";
-          vRuleCtx.fillText(i * vRuleInterval, 5, i * vRuleInterval);
+          // TODO: 数字竖向显示 需要旋转90度
+          vRuleCtx.fillText(i * vRuleInterval, 5, i * vRuleInterval + 12);
         } else if (i % 5 === 0) {
           vRuleCtx.moveTo(0, i * vRuleInterval);
-          vRuleCtx.lineTo(15, i * vRuleInterval);
+          vRuleCtx.lineTo(8, i * vRuleInterval);
         } else {
           vRuleCtx.moveTo(0, i * vRuleInterval);
-          vRuleCtx.lineTo(10, i * vRuleInterval);
+          vRuleCtx.lineTo(4, i * vRuleInterval);
         }
       }
       vRuleCtx.stroke();

@@ -1,26 +1,41 @@
 <template>
   <div
     class="freedom-container"
-    :class="[selected ? 'selected' : '']"
+    :class="[componentData.selected ? 'selected' : '']"
     ref="freedomContainer"
     @dragstart="$listeners.dragstart"
     @dragover="handleDragOver"
     @drop="handleDrop"
     @click="$listeners.click"
   >
-    <i class="delete-icon" v-if="selected" @click="handleDeleteItem">删除</i>
-    <i class="top-arrow-icon" v-if="selected" @click="handleMoveToTop">上移</i>
-    <i class="bottom-arrow-icon" v-if="selected" @click="handleMoveToBottom">
+    <i
+      class="delete-icon"
+      v-if="componentData.selected"
+      @click="handleDeleteItem"
+    >
+      删除
+    </i>
+    <i
+      class="top-arrow-icon"
+      v-if="componentData.selected"
+      @click="handleMoveToTop"
+    >
+      上移
+    </i>
+    <i
+      class="bottom-arrow-icon"
+      v-if="componentData.selected"
+      @click="handleMoveToBottom"
+    >
       下移
     </i>
-    <i class="setting-icon" v-if="selected">设置</i>
+    <i class="setting-icon" v-if="componentData.selected">设置</i>
     <component
-      v-for="el in componentData"
-      :componentData="el.children"
+      v-for="el in componentData.children"
+      :componentData="el"
       :class="['drag-element']"
       draggable="true"
       @dragstart="(e) => handleDragStart(e, el)"
-      :uniqueKey="el.id"
       :key="el.id"
       :is="el.componentName"
       :style="el.style"
@@ -34,17 +49,9 @@ import getWidgetInitAttr from "@/config/widgetInitAttr.js";
 export default {
   name: "FreedomConatiner",
   props: {
-    selected: {
-      type: Boolean,
-      default: false,
-    },
-    uniqueKey: {
-      type: String || Number,
-      required: true,
-    },
     componentData: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => {},
     },
   },
   data() {
@@ -59,13 +66,13 @@ export default {
       e.dataTransfer.dropEffect = "copy";
     },
     handleDeleteItem() {
-      this.$store.dispatch("deleteComponent", this.uniqueKey);
+      this.$store.dispatch("deleteComponent", this.componentData.id);
     },
     handleMoveToTop() {
-      this.$store.dispatch("moveToTop", this.uniqueKey);
+      this.$store.dispatch("moveToTop", this.componentData.id);
     },
     handleMoveToBottom() {
-      this.$store.dispatch("moveToBottom", this.uniqueKey);
+      this.$store.dispatch("moveToBottom", this.componentData.id);
     },
     handleDragStart(e, widgetItem) {
       e.stopPropagation();
@@ -94,7 +101,7 @@ export default {
       const transferData = JSON.parse(
         e.dataTransfer.getData("application/json")
       );
-      const hasExistComponent = this.componentData.find(
+      const hasExistComponent = this.componentData.children.find(
         (item) => item.id === transferData.id
       );
       console.log("hasExistComponent", hasExistComponent);
@@ -126,7 +133,7 @@ export default {
             left: `${positionX}px`,
           };
           this.$store.dispatch("addComponent", {
-            id: this.uniqueKey,
+            id: this.componentData.id,
             component: componentOpt,
           });
         }

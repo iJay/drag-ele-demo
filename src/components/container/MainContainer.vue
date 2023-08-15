@@ -2,22 +2,39 @@
   <div
     class="main-container"
     :style="{ width: '1200px' }"
+    :class="[componentData.selected ? 'selected' : '']"
     @drop="handleDrop"
     @dragover="handleDragOver"
+    @click="$listeners.click"
   >
+    <i
+      class="delete-icon"
+      v-if="componentData.selected"
+      @click="handleDeleteItem"
+    >
+      删除
+    </i>
+    <i class="setting-icon" v-if="componentData.selected">设置</i>
     <component
       v-for="component in componentData.children"
       :key="component.id"
       :is="component.componentName"
       :componentData="component"
       :style="component.style"
+      @click="(e) => handleClick(e, component)"
       @dragstart="(e) => handleDragStart(e, component)"
     />
+    <div class="btn-group">
+      <el-button type="primary" size="mini" @click="handleAddContainer">
+        添加
+      </el-button>
+    </div>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
 export default {
   props: {
     componentData: {
@@ -27,9 +44,31 @@ export default {
   },
   name: "MainConatiner",
   methods: {
+    ...mapActions(["changeSelected", "addComponent", "deleteComponent"]),
+    handleClick(e, component) {
+      e.stopPropagation();
+      this.changeSelected({
+        id: component.id,
+        selected: !component.selected,
+      });
+    },
+    handleDeleteItem(e) {
+      e.stopPropagation();
+      this.deleteComponent(this.componentData.id);
+    },
+    handleAddContainer() {
+      const component = {
+        componentName: "freedom-container",
+        style: {},
+        children: [],
+      };
+      this.addComponent({
+        parentId: this.componentData.id,
+        component,
+      });
+    },
     handleDrop(e) {
       e.preventDefault();
-      debugger;
       const transferData = JSON.parse(
         e.dataTransfer.getData("application/json")
       );
@@ -44,7 +83,7 @@ export default {
         );
         const componentOpt = _.cloneDeep(widget);
         componentOpt.id = transferData.id;
-        this.$store.dispatch("addComponent", {
+        this.addComponent({
           parentId: this.componentData.id,
           component: componentOpt,
         });
@@ -62,6 +101,7 @@ export default {
 </script>
 <style lang="scss">
 .main-container {
+  position: relative;
   width: 100%;
   margin: 0 auto;
   min-height: calc(100vh - 83px);
@@ -69,5 +109,61 @@ export default {
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .btn-group {
+    margin-top: 32px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.selected {
+    border: 1px dashed #409eff;
+
+    .delete-icon {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #f56c6c;
+      cursor: pointer;
+    }
+
+    .setting-icon {
+      position: absolute;
+      bottom: 0;
+      right: 46px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+
+    .top-arrow-icon {
+      position: absolute;
+      bottom: 0;
+      right: 138px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+
+    .bottom-arrow-icon {
+      position: absolute;
+      bottom: 0;
+      right: 92px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: #fff;
+      background-color: #409eff;
+      cursor: pointer;
+    }
+  }
 }
 </style>

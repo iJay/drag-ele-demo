@@ -28,10 +28,10 @@ function findComponentById(componentData, id) {
 }
 
 // 递归遍历组件树 修改选中状态
-function handleComponentSelected(componentData, id) {
+function handleComponentSelected(componentData, id, selected) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
-      componentData[i].selected = true;
+      componentData[i].selected = selected;
       break;
     } else {
       handleComponentSelected(componentData[i].children);
@@ -156,6 +156,7 @@ export default new Vuex.Store({
     addComponent(state, componentMetaData) {
       // 1.根据id找到对应的父组件
       if (componentMetaData.parentId) {
+        componentMetaData.component.id = generateId();
         const parentComponent = findComponentById(
           state.componentData,
           componentMetaData.parentId

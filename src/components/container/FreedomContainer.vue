@@ -45,6 +45,7 @@
 
 <script>
 import _ from "lodash";
+import { mapActions } from "vuex";
 import getWidgetInitAttr from "@/config/widgetInitAttr.js";
 export default {
   name: "FreedomConatiner",
@@ -61,18 +62,25 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      "addComponent",
+      "deleteComponent",
+      "moveToTop",
+      "moveToBottom",
+      "changeComponentAttr",
+    ]),
     handleDragOver(e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
     handleDeleteItem() {
-      this.$store.dispatch("deleteComponent", this.componentData.id);
+      this.deleteComponent(this.componentData.id);
     },
     handleMoveToTop() {
-      this.$store.dispatch("moveToTop", this.componentData.id);
+      this.moveToTop(this.componentData.id);
     },
     handleMoveToBottom() {
-      this.$store.dispatch("moveToBottom", this.componentData.id);
+      this.moveToBottom(this.componentData.id);
     },
     handleDragStart(e, widgetItem) {
       e.stopPropagation();
@@ -104,16 +112,15 @@ export default {
       const hasExistComponent = this.componentData.children.find(
         (item) => item.id === transferData.id
       );
-      console.log("hasExistComponent", hasExistComponent);
       const widget = this.$store.state.widgets.find(
         (item) => item.componentName === transferData.componentName
       );
       if (!hasExistComponent) {
         if (widget) {
           const componentOpt = _.cloneDeep(widget);
-          componentOpt.id = `${componentOpt.id}-${
-            componentOpt.componentName
-          }-${new Date().getTime()}`;
+          // componentOpt.id = `${componentOpt.id}-${
+          //   componentOpt.componentName
+          // }-${new Date().getTime()}`;
           // 重新定义拖拽元素在容器内释放的位置
           // 这里的元素宽高需要给每一个组件一个初始值，放在widget属性里面
           const { initWidth, initHeight } =
@@ -132,8 +139,8 @@ export default {
             top: `${positionY}px`,
             left: `${positionX}px`,
           };
-          this.$store.dispatch("addComponent", {
-            id: this.componentData.id,
+          this.addComponent({
+            parentId: this.componentData.id,
             component: componentOpt,
           });
         }
@@ -157,7 +164,7 @@ export default {
           left: `${positionX}px`,
         };
         // 修改组件属性
-        this.$store.dispatch("changeComponentAttr", {
+        this.changeComponentAttr({
           id: hasExistComponent.id,
           component: hasExistComponent,
         });
@@ -174,6 +181,7 @@ export default {
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: relative;
 
   &.selected {
     border: 1px dashed #409eff;

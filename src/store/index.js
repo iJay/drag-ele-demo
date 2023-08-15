@@ -22,9 +22,13 @@ function findComponentById(componentData, id) {
     if (componentData[i].id === id) {
       return componentData[i];
     } else {
-      findComponentById(componentData[i].children, id);
+      const foundComponent = findComponentById(componentData[i].children, id);
+      if (foundComponent) {
+        return foundComponent; // 如果在子组件中找到了，返回子组件
+      }
     }
   }
+  return null; // 如果未找到组件，返回 null
 }
 
 // 递归遍历组件树 修改选中状态

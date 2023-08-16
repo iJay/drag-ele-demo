@@ -36,9 +36,11 @@ function handleComponentSelected(componentData, id, selected) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
       componentData[i].selected = selected;
-      break;
     } else {
-      handleComponentSelected(componentData[i].children);
+      componentData[i].selected = false;
+    }
+    if (componentData[i].children.length > 0) {
+      handleComponentSelected(componentData[i].children, id, selected);
     }
   }
 }
@@ -50,27 +52,18 @@ function deleteComponentById(componentData, id) {
       componentData.splice(i, 1);
       break;
     } else {
-      deleteComponentById(componentData[i].children);
+      deleteComponentById(componentData[i].children, id);
     }
-  }
-}
-
-// 重置所有组件的选中状态 为false
-function resetComponentSelected(componentData) {
-  for (let i = 0; i < componentData.length; i++) {
-    componentData[i].selected = false;
-    resetComponentSelected(componentData[i].children);
   }
 }
 
 // 上移
 function moveToTop(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id) {
+    if (componentData[i].id === id && componentData[i - 1]) {
       const deleteItem = componentData.splice(i, 1);
       // 上移到前一个位置
       componentData.splice(i - 1, 0, deleteItem[0]);
-      console.log(componentData);
       break;
     }
   }
@@ -79,7 +72,7 @@ function moveToTop(componentData, id) {
 // 下移
 function moveToBottom(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id) {
+    if (componentData[i].id === id && componentData[i + 1]) {
       const deleteItem = componentData.splice(i, 1);
       // 下移到后一个位置
       componentData.splice(i + 1, 0, deleteItem[0]);
@@ -183,7 +176,6 @@ export default new Vuex.Store({
     },
     // 修改选中组件
     changeSelected(state, data) {
-      resetComponentSelected(state.componentData);
       handleComponentSelected(state.componentData, data.id, data.selected);
     },
     // 删除组件
@@ -192,11 +184,11 @@ export default new Vuex.Store({
     },
     // 上移
     moveToTop(state, id) {
-      moveToTop(state.componentData, id);
+      moveToTop(state.componentData[0].children, id);
     },
     // 下移
     moveToBottom(state, id) {
-      moveToBottom(state.componentData, id);
+      moveToBottom(state.componentData[0].children, id);
     },
   },
   actions: {

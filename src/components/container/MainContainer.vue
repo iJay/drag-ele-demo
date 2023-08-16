@@ -1,7 +1,6 @@
 <template>
   <div
     class="main-container"
-    :style="{ width: '1200px' }"
     :class="[componentData.selected ? 'selected' : '']"
     @drop="handleDrop"
     @dragover="handleDragOver"
@@ -44,23 +43,18 @@ export default {
   },
   name: "MainConatiner",
   methods: {
-    ...mapActions(["changeSelected", "addComponent", "deleteComponent"]),
-    handleClick(e, component) {
-      e.stopPropagation();
-      this.changeSelected({
-        id: component.id,
-        selected: !component.selected,
-      });
-    },
+    ...mapActions(["addComponent", "deleteComponent"]),
     handleDeleteItem(e) {
       e.stopPropagation();
       this.deleteComponent(this.componentData.id);
     },
-    handleAddContainer() {
+    handleAddContainer(e) {
+      e.stopPropagation();
       const component = {
         componentName: "freedom-container",
         style: {},
         children: [],
+        selected: false,
       };
       this.addComponent({
         parentId: this.componentData.id,
@@ -69,9 +63,9 @@ export default {
     },
     handleDrop(e) {
       e.preventDefault();
-      const transferData = JSON.parse(
-        e.dataTransfer.getData("application/json")
-      );
+      const transferData =
+        e.dataTransfer.getData("application/json") &&
+        JSON.parse(e.dataTransfer.getData("application/json"));
       const hasExist = this.$store.state.componentData.some(
         (item) =>
           item.id === transferData.id &&

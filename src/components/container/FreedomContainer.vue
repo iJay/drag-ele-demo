@@ -4,9 +4,7 @@
     :class="[componentData.selected ? 'selected' : '']"
     ref="freedomContainer"
     @dragstart="$listeners.dragstart"
-    @dragover="handleDragOver"
-    @drop="handleDrop"
-    @click="$listeners.click"
+    @click="handleClick"
   >
     <i
       class="delete-icon"
@@ -30,16 +28,27 @@
       下移
     </i>
     <i class="setting-icon" v-if="componentData.selected">设置</i>
-    <component
-      v-for="el in componentData.children"
-      :componentData="el"
-      :class="['drag-element']"
-      draggable="true"
-      @dragstart="(e) => handleDragStart(e, el)"
-      :key="el.id"
-      :is="el.componentName"
-      :style="el.style"
-    ></component>
+    <i
+      class="el-icon-d-caret"
+      v-if="componentData.selected"
+      @mousedown="startResize"
+    ></i>
+    <div
+      class="content-container"
+      @dragover="handleDragOver"
+      @drop="handleDrop"
+    >
+      <component
+        v-for="el in componentData.children"
+        :componentData="el"
+        :class="['drag-element']"
+        draggable="true"
+        @dragstart="(e) => handleDragStart(e, el)"
+        :key="el.id"
+        :is="el.componentName"
+        :style="el.style"
+      ></component>
+    </div>
   </div>
 </template>
 
@@ -59,6 +68,10 @@ export default {
     return {
       mouseInDragEndEleX: 0,
       mouseInDragEndEleY: 0,
+      isResizing: false,
+      startY: 0,
+      startHeight: 0,
+      newHeight: 0,
     };
   },
   methods: {
@@ -68,18 +81,78 @@ export default {
       "moveToTop",
       "moveToBottom",
       "changeComponentAttr",
+      "changeSelected",
     ]),
+    startResize(event) {
+      this.isResizing = true;
+      this.startY = event.clientY;
+      this.startHeight =
+        this.$refs.freedomContainer.getBoundingClientRect().height;
+
+      document.addEventListener("mousemove", _.throttle(this.resize, 100));
+      document.addEventListener("mouseup", this.stopResize);
+    },
+    resize(event) {
+      if (this.isResizing) {
+        const deltaY = event.clientY - this.startY;
+        this.newHeight = this.startHeight + deltaY;
+        this.$refs.freedomContainer.style.height = `${this.newHeight}px`;
+      }
+    },
+    stopResize(e) {
+      e.stopPropagation();
+      this.changeComponentAttr({
+        id: this.componentData.id,
+        component: {
+          ...this.componentData,
+          style: {
+            ...this.componentData.style,
+            height: `${this.newHeight}px`,
+          },
+        },
+      });
+      this.isResizing = false;
+      document.removeEventListener("mousemove", this.resize);
+      document.removeEventListener("mouseup", this.stopResize);
+    },
+    handleClick(e) {
+      e.stopPropagation();
+      this.changeSelected({
+        id: this.componentData.id,
+        selected: !this.componentData.selected,
+      });
+    },
     handleDragOver(e) {
+      console.log(e);
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
-    handleDeleteItem() {
-      this.deleteComponent(this.componentData.id);
+    handleDeleteItem(e) {
+      console.log(e);
+      e.stopPropagation();
+      this.$confirm("确定删除该组件吗？", "提示", {
+        type: "warning",
+      })
+        .then(() => {
+          this.deleteComponent(this.componentData.id);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
-    handleMoveToTop() {
+    handleMoveToTop(e) {
+      e.stopPropagation();
       this.moveToTop(this.componentData.id);
     },
-    handleMoveToBottom() {
+    handleMoveToBottom(e) {
+      e.stopPropagation();
       this.moveToBottom(this.componentData.id);
     },
     handleDragStart(e, widgetItem) {
@@ -106,9 +179,9 @@ export default {
     handleDrop(e) {
       e.preventDefault();
       e.stopPropagation();
-      const transferData = JSON.parse(
-        e.dataTransfer.getData("application/json")
-      );
+      const transferData =
+        e.dataTransfer.getData("application/json") &&
+        JSON.parse(e.dataTransfer.getData("application/json"));
       const hasExistComponent = this.componentData.children.find(
         (item) => item.id === transferData.id
       );
@@ -118,11 +191,6 @@ export default {
       if (!hasExistComponent) {
         if (widget) {
           const componentOpt = _.cloneDeep(widget);
-          // componentOpt.id = `${componentOpt.id}-${
-          //   componentOpt.componentName
-          // }-${new Date().getTime()}`;
-          // 重新定义拖拽元素在容器内释放的位置
-          // 这里的元素宽高需要给每一个组件一个初始值，放在widget属性里面
           const { initWidth, initHeight } =
             getWidgetInitAttr()[componentOpt.componentName];
           const positionX =
@@ -180,8 +248,21 @@ export default {
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   position: relative;
+
+  &:hover {
+    .content-container {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .content-container {
+    width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
 
   &.selected {
     border: 1px dashed #409eff;
@@ -195,6 +276,7 @@ export default {
       color: #fff;
       background-color: #f56c6c;
       cursor: pointer;
+      z-index: 9;
     }
 
     .setting-icon {
@@ -206,6 +288,7 @@ export default {
       color: #fff;
       background-color: #409eff;
       cursor: pointer;
+      z-index: 9;
     }
 
     .top-arrow-icon {
@@ -217,6 +300,7 @@ export default {
       color: #fff;
       background-color: #409eff;
       cursor: pointer;
+      z-index: 9;
     }
 
     .bottom-arrow-icon {
@@ -228,6 +312,16 @@ export default {
       color: #fff;
       background-color: #409eff;
       cursor: pointer;
+      z-index: 9;
+    }
+
+    .el-icon-d-caret {
+      position: absolute;
+      bottom: -9px;
+      left: 50%;
+      margin-left: -8px;
+      cursor: ns-resize;
+      z-index: 9;
     }
   }
 }

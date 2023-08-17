@@ -80,8 +80,8 @@ export default {
       "deleteComponent",
       "moveToTop",
       "moveToBottom",
-      "changeComponentAttr",
-      "changeSelected",
+      "updateComponentAttr",
+      "updateSelected",
     ]),
     startResize(event) {
       this.isResizing = true;
@@ -101,15 +101,10 @@ export default {
     },
     stopResize(e) {
       e.stopPropagation();
-      this.changeComponentAttr({
+      this.updateComponentAttr({
         id: this.componentData.id,
-        component: {
-          ...this.componentData,
-          style: {
-            ...this.componentData.style,
-            height: `${this.newHeight}px`,
-          },
-        },
+        attrKey: "height",
+        attrValue: `${this.newHeight}px`,
       });
       this.isResizing = false;
       document.removeEventListener("mousemove", this.resize);
@@ -117,7 +112,7 @@ export default {
     },
     handleClick(e) {
       e.stopPropagation();
-      this.changeSelected({
+      this.updateSelected({
         id: this.componentData.id,
         selected: !this.componentData.selected,
       });
@@ -225,16 +220,17 @@ export default {
           e.pageY -
           this.$refs.freedomContainer.getBoundingClientRect().y -
           this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
-        hasExistComponent.style = {
+        const hasExistComponentStyle = {
           ...widget.style,
           position: "absolute",
           top: `${positionY}px`,
           left: `${positionX}px`,
         };
         // 修改组件属性
-        this.changeComponentAttr({
+        this.updateComponentAttr({
           id: hasExistComponent.id,
-          component: hasExistComponent,
+          attrKey: "style",
+          attrValue: hasExistComponentStyle,
         });
       }
     },

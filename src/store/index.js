@@ -4,14 +4,14 @@ import { generateId } from "../utils";
 
 Vue.use(Vuex);
 
-// 遍历组件树
-function findComponent(componentData, componentMetaData) {
+// 更新组件属性
+function updateComponentAttr(componentData, componentMetaData) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === componentMetaData.id) {
-      componentData[i] = componentMetaData.component;
+      componentData[i][componentMetaData.attrKey] = componentMetaData.attrValue;
       break;
     } else {
-      findComponent(componentData[i].children, componentMetaData);
+      updateComponentAttr(componentData[i].children, componentMetaData);
     }
   }
 }
@@ -32,7 +32,7 @@ function findComponentById(componentData, id) {
 }
 
 // 递归遍历组件树 修改选中状态
-function handleComponentSelected(componentData, id, selected) {
+function updateComponentSelected(componentData, id, selected) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === id) {
       componentData[i].selected = selected;
@@ -40,7 +40,7 @@ function handleComponentSelected(componentData, id, selected) {
       componentData[i].selected = false;
     }
     if (componentData[i].children.length > 0) {
-      handleComponentSelected(componentData[i].children, id, selected);
+      updateComponentSelected(componentData[i].children, id, selected);
     }
   }
 }
@@ -167,16 +167,16 @@ export default new Vuex.Store({
       }
     },
     // 修改组件属性
-    changeComponentAttr(state, componentMetaData) {
-      findComponent(state.componentData, componentMetaData);
+    updateComponentAttr(state, componentMetaData) {
+      updateComponentAttr(state.componentData, componentMetaData);
     },
     // 修改拖拽初始化坐标
     changeCoordinate(state, coordinate) {
       state.coordinate = coordinate;
     },
     // 修改选中组件
-    changeSelected(state, data) {
-      handleComponentSelected(state.componentData, data.id, data.selected);
+    updateSelected(state, { id, selected }) {
+      updateComponentSelected(state.componentData, id, selected);
     },
     // 删除组件
     deleteComponent(state, id) {
@@ -201,12 +201,12 @@ export default new Vuex.Store({
       commit("changeCoordinate", coordinate);
     },
     // 修改组件属性
-    changeComponentAttr({ commit }, componentMetaData) {
-      commit("changeComponentAttr", componentMetaData);
+    updateComponentAttr({ commit }, componentMetaData) {
+      commit("updateComponentAttr", componentMetaData);
     },
     // 修改选中组件
-    changeSelected({ commit }, data) {
-      commit("changeSelected", data);
+    updateSelected({ commit }, data) {
+      commit("updateSelected", data);
     },
     // 删除组件
     deleteComponent({ commit }, id) {

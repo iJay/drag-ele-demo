@@ -45,16 +45,17 @@ componentData = [
 5. 文章轮播 （业务组件，待定）
 6. 轮播图
 7. 导航栏组件
+8. Tab组件
 
 ## 三、截止到8月20日需要完成的功能点
 
-1. 编辑器。
-2. 渲染器。
-3. 容器组件FreedomContainer支持拖拽高度的功能。
-4. ImageWidget、TextWidget组件支持拖拽自身修改自身的高度，宽度。
-5. 容器组件FreedomContainer内部元素的拖拽支持吸附和对齐。
-6. ImageWidget组件支持图片上传。
-7. 容器组件SectionContainer支持背景图的更换。
-8. 抽象一个组件用于上移、下移、设置、删除、调整大小的功能。
-9. 工具箱支持自由拖拽到任意位置。
+1. 编辑器。 ✔
+2. 渲染器。❌
+3. 容器组件FreedomContainer支持拖拽高度的功能。 ✔
+4. ImageWidget、TextWidget组件支持拖拽自身修改自身的高度，宽度。❌
+5. 容器组件FreedomContainer内部元素的拖拽支持吸附和对齐。❌
+6. ImageWidget组件支持图片上传。❌
+7. 容器组件SectionContainer支持背景图的更换。❌
+8. 抽象一个组件用于上移、下移、设置、删除、调整大小的功能。 ✔
+9. 工具箱支持自由拖拽到任意位置。❌
 

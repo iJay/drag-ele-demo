@@ -22,7 +22,7 @@ export default {
     ...mapState(["componentData"]),
   },
   methods: {
-    ...mapActions(["addComponent", "changeSelected"]),
+    ...mapActions(["addComponent", "updateSelected"]),
     handleCreatePage() {
       const componentOpt = {
         componentName: "MainContainer",
@@ -39,7 +39,7 @@ export default {
     },
     handleEleClick(e) {
       e.stopPropagation();
-      this.changeSelected({
+      this.updateSelected({
         id: this.componentData[0].id,
         selected: !this.componentData[0].selected,
       });

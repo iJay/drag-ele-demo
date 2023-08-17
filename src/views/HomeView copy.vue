@@ -68,7 +68,7 @@ export default {
     },
     handleClick(e, el) {
       e.stopPropagation();
-      this.$store.dispatch("changeSelected", {
+      this.$store.dispatch("updateSelected", {
         id: el.id,
         selected: !el.selected,
       });

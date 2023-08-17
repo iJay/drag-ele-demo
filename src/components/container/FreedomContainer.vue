@@ -35,6 +35,7 @@
     ></i>
     <div
       class="content-container"
+      ref="contentContainer"
       @dragover="handleDragOver"
       @drop="handleDrop"
     >
@@ -188,13 +189,14 @@ export default {
           const componentOpt = _.cloneDeep(widget);
           const { initWidth, initHeight } =
             getWidgetInitAttr()[componentOpt.componentName];
+          console.log(this.$refs.contentContainer.getBoundingClientRect());
           const positionX =
             e.pageX -
-            this.$refs.freedomContainer.getBoundingClientRect().x -
+            this.$refs.contentContainer.getBoundingClientRect().x -
             this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
           const positionY =
             e.pageY -
-            this.$refs.freedomContainer.getBoundingClientRect().y -
+            this.$refs.contentContainer.getBoundingClientRect().y -
             this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
           componentOpt.style = {
             ...widget.style,
@@ -214,11 +216,11 @@ export default {
           getWidgetInitAttr()[hasExistComponent.componentName];
         const positionX =
           e.pageX -
-          this.$refs.freedomContainer.getBoundingClientRect().x -
+          this.$refs.contentContainer.getBoundingClientRect().x -
           this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
         const positionY =
           e.pageY -
-          this.$refs.freedomContainer.getBoundingClientRect().y -
+          this.$refs.contentContainer.getBoundingClientRect().y -
           this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
         const hasExistComponentStyle = {
           ...widget.style,

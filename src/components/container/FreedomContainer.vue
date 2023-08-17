@@ -119,12 +119,10 @@ export default {
       });
     },
     handleDragOver(e) {
-      console.log(e);
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
     handleDeleteItem(e) {
-      console.log(e);
       e.stopPropagation();
       this.$confirm("确定删除该组件吗？", "提示", {
         type: "warning",
@@ -189,7 +187,6 @@ export default {
           const componentOpt = _.cloneDeep(widget);
           const { initWidth, initHeight } =
             getWidgetInitAttr()[componentOpt.componentName];
-          console.log(this.$refs.contentContainer.getBoundingClientRect());
           const positionX =
             e.pageX -
             this.$refs.contentContainer.getBoundingClientRect().x -

@@ -6,7 +6,7 @@ export default function getWidgetInitAttr() {
       initHeight: "160",
     },
     "text-widget": {
-      initWidth: "160",
+      initWidth: "116",
       initHeight: "60",
     },
     "freedom-container": {

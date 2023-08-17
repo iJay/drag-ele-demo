@@ -194,10 +194,18 @@ export default {
             e.pageX -
             this.$refs.contentContainer.getBoundingClientRect().x -
             this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
+          console.log("e.pageY: ", e.pageY);
+          console.log(
+            "this.$refs.contentContainer.getBoundingClientRect().y: ",
+            this.$refs.contentContainer.getBoundingClientRect().y
+          );
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
           const positionY =
             e.pageY -
             this.$refs.contentContainer.getBoundingClientRect().y -
-            this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
+            0.5 * parseInt(initHeight) -
+            scrollTop;
           componentOpt.style = {
             ...widget.style,
             position: "absolute",
@@ -218,10 +226,13 @@ export default {
           e.pageX -
           this.$refs.contentContainer.getBoundingClientRect().x -
           this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
         const positionY =
           e.pageY -
           this.$refs.contentContainer.getBoundingClientRect().y -
-          this.$store.state.coordinate.mouseInEleY * parseInt(initHeight);
+          0.5 * parseInt(initHeight) -
+          scrollTop;
         const hasExistComponentStyle = {
           ...widget.style,
           position: "absolute",

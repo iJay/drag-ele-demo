@@ -9,7 +9,12 @@
 <script>
 export default {
   name: "ImageWidget",
-  components: {},
+  props: {
+    componentData: {
+      type: Object,
+      default: () => {},
+    },
+  },
   data() {
     return {};
   },

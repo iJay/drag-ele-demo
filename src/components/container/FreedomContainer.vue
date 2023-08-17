@@ -194,11 +194,6 @@ export default {
             e.pageX -
             this.$refs.contentContainer.getBoundingClientRect().x -
             this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
-          console.log("e.pageY: ", e.pageY);
-          console.log(
-            "this.$refs.contentContainer.getBoundingClientRect().y: ",
-            this.$refs.contentContainer.getBoundingClientRect().y
-          );
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
           const positionY =

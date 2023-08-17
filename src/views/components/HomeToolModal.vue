@@ -60,7 +60,6 @@ export default {
         componentName: widgetItem.componentName,
         id: generateId(),
       };
-      console.log(data);
       e.dataTransfer.setData("application/json", JSON.stringify(data));
     },
   },

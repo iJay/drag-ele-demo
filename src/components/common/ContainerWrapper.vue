@@ -1,6 +1,10 @@
 <template>
-  <div class="conatiner-wrapper">
-    <div class="left-bottom-operation">
+  <div
+    class="conatiner-wrapper"
+    :class="[selected ? 'selected' : '']"
+    @click="handleSelectedClick"
+  >
+    <div class="left-bottom-operation" v-show="selected">
       <i
         class="operation-icon el-icon-delete"
         title="删除"
@@ -16,9 +20,14 @@
         title="下移"
         @click="handleMoveToBottom"
       ></i>
-      <i class="operation-icon el-icon-setting" title="设置"></i>
+      <i
+        v-show="selected"
+        class="operation-icon el-icon-setting"
+        title="设置"
+      ></i>
     </div>
     <i
+      v-show="selected"
       class="operation-icon el-icon-d-caret"
       @mousedown="handleStartResize"
       title="调整高度"
@@ -33,7 +42,7 @@
 
 <script>
 import _ from "lodash";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "ContainerWrapper",
   props: {
@@ -50,13 +59,27 @@ export default {
       newHeight: 0,
     };
   },
+  computed: {
+    ...mapState(["currentSelectedComponent"]),
+    selected() {
+      return (
+        this.currentSelectedComponent &&
+        this.currentSelectedComponent.id === this.componentData.id
+      );
+    },
+  },
   methods: {
     ...mapActions([
       "updateComponentAttr",
       "moveToTop",
       "moveToBottom",
       "deleteComponent",
+      "updateSelectedComponent",
     ]),
+    handleSelectedClick(e) {
+      e.stopPropagation();
+      this.updateSelectedComponent(this.componentData.id);
+    },
     handleStartResize(event) {
       this.isResizing = true;
       this.startY = event.clientY;
@@ -118,32 +141,34 @@ export default {
 <style lang="scss">
 .conatiner-wrapper {
   position: relative;
-  border: 1px dashed #409eff;
 
-  .operation-icon {
-    cursor: pointer;
-    background: #ccc;
-  }
-
-  .left-bottom-operation {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
-    & > i {
-      margin-left: 12px;
+  &.selected {
+    border: 1px dashed #409eff;
+    .operation-icon {
+      cursor: pointer;
+      background: #ccc;
     }
-  }
-  .el-icon-d-caret {
-    position: absolute;
-    bottom: -9px;
-    left: 50%;
-    margin-left: -8px;
-    cursor: ns-resize;
-    z-index: 9;
+
+    .left-bottom-operation {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-content: center;
+      & > i {
+        margin-left: 12px;
+      }
+    }
+    .el-icon-d-caret {
+      position: absolute;
+      bottom: -9px;
+      left: 50%;
+      margin-left: -8px;
+      cursor: ns-resize;
+      z-index: 9;
+    }
   }
 }
 </style>

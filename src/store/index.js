@@ -31,20 +31,6 @@ function findComponentById(componentData, id) {
   return null; // 如果未找到组件，返回 null
 }
 
-// 递归遍历组件树 修改选中状态
-function updateComponentSelected(componentData, id, selected) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id) {
-      componentData[i].selected = selected;
-    } else {
-      componentData[i].selected = false;
-    }
-    if (componentData[i].children.length > 0) {
-      updateComponentSelected(componentData[i].children, id, selected);
-    }
-  }
-}
-
 // 根据id删除组件
 function deleteComponentById(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {
@@ -176,8 +162,12 @@ export default new Vuex.Store({
       state.coordinate = coordinate;
     },
     // 修改选中组件
-    updateSelected(state, { id, selected }) {
-      updateComponentSelected(state.componentData, id, selected);
+    updateSelectedComponent(state, id) {
+      const currentSelectedComponent = findComponentById(
+        state.componentData,
+        id
+      );
+      state.currentSelectedComponent = currentSelectedComponent;
     },
     // 删除组件
     deleteComponent(state, id) {
@@ -206,8 +196,8 @@ export default new Vuex.Store({
       commit("updateComponentAttr", componentMetaData);
     },
     // 修改选中组件
-    updateSelected({ commit }, data) {
-      commit("updateSelected", data);
+    updateSelectedComponent({ commit }, data) {
+      commit("updateSelectedComponent", data);
     },
     // 删除组件
     deleteComponent({ commit }, id) {

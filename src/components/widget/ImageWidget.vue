@@ -1,5 +1,9 @@
 <template>
-  <img class="image-widget" src="../../assets/image-icon.svg" />
+  <img
+    @dragstart="$listeners.dragstart"
+    class="image-widget"
+    src="../../assets/image-icon.svg"
+  />
 </template>
 
 <script>

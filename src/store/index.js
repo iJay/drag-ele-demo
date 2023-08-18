@@ -87,7 +87,8 @@ export default new Vuex.Store({
       mouseInEleX: 0,
       mouseInEleY: 0,
     },
-    componentData: [],
+    currentSelectedComponent: null, // 当前选中的组件
+    componentData: [], // 数据源
     widgets: [
       {
         id: 0,

@@ -1,21 +1,52 @@
 <template>
-  <div class="freedom-container" ref="freedomContainer" @click="handleClick">
+  <div
+    class="freedom-container"
+    ref="freedomContainer"
+    @dragstart="$listeners.dragstart"
+    @click="handleClick"
+  >
+    <!-- <i
+      class="delete-icon"
+      v-if="componentData.selected"
+      @click="handleDeleteItem"
+    >
+      删除
+    </i>
+    <i
+      class="top-arrow-icon"
+      v-if="componentData.selected"
+      @click="handleMoveToTop"
+    >
+      上移
+    </i>
+    <i
+      class="bottom-arrow-icon"
+      v-if="componentData.selected"
+      @click="handleMoveToBottom"
+    >
+      下移
+    </i>
+    <i class="setting-icon" v-if="componentData.selected">设置</i>
+    <i
+      class="el-icon-d-caret"
+      v-if="componentData.selected"
+      @mousedown="startResize"
+    ></i> -->
     <div
       class="content-container"
       ref="contentContainer"
       @dragover="handleDragOver"
       @drop="handleDrop"
     >
-      <component
+      <component-wrapper
         v-for="el in componentData.children"
         :componentData="el"
         :class="['drag-element']"
         draggable="true"
         @dragstart="(e) => handleDragStart(e, el)"
-        :is="el.componentName"
         :key="el.id"
         :style="el.style"
-      ></component>
+      ></component-wrapper>
     </div>
   </div>
 </template>

@@ -4,7 +4,6 @@
     :contenteditable="contenteditable"
     @dblclick="handleDblClick"
     @blur="contenteditable = false"
-    @dragstart="$listeners.dragstart"
     v-html="content"
   ></div>
 </template>
@@ -33,7 +32,6 @@ export default {
 </script>
 <style lang="scss">
 .text-widget {
-  width: 160px;
   padding: 10px;
   box-sizing: border-box;
   text-align: left;

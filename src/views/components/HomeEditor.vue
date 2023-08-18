@@ -6,11 +6,12 @@
         创建页面
       </el-button>
     </div>
-    <main-container
-      v-else
-      :componentData="componentData && componentData[0]"
-      @click="handleEleClick"
-    />
+    <main-container v-else :componentData="componentData && componentData[0]" />
+    <div class="btn-group" v-if="this.componentData[0]">
+      <el-button type="primary" size="mini" @click="handleAddContainer">
+        添加通栏
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -37,11 +38,17 @@ export default {
         component: componentOpt,
       });
     },
-    handleEleClick(e) {
+    handleAddContainer(e) {
       e.stopPropagation();
-      this.updateSelected({
-        id: this.componentData[0].id,
-        selected: !this.componentData[0].selected,
+      const component = {
+        componentName: "freedom-container",
+        style: {},
+        children: [],
+        selected: false,
+      };
+      this.addComponent({
+        parentId: this.componentData[0] && this.componentData[0].id,
+        component,
       });
     },
   },
@@ -61,6 +68,13 @@ export default {
     p {
       margin-right: 8px;
     }
+  }
+  .btn-group {
+    margin-top: 32px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

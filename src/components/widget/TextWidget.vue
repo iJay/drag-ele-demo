@@ -4,7 +4,6 @@
     :contenteditable="contenteditable"
     @dblclick="handleDblClick"
     @blur="contenteditable = false"
-    @dragstart="$listeners.dragstart"
     v-html="content"
   ></div>
 </template>

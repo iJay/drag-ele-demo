@@ -145,6 +145,8 @@ export default new Vuex.Store({
           state.componentData,
           componentMetaData.parentId
         );
+        // z-index默认值为当前children数组长度
+        componentMetaData.component.style["z-index"] = 1;
         // 2.将组件添加到父组件的children中
         parentComponent.children.push(componentMetaData.component);
       } else {
@@ -181,6 +183,43 @@ export default new Vuex.Store({
     moveToBottom(state, id) {
       moveToBottom(state.componentData[0].children, id);
     },
+    // 置顶
+    updateZIndexToTop(state, componentMetaData) {
+      // 1.根据id找到对应的父组件
+      const parentComponent = findComponentById(
+        state.componentData,
+        componentMetaData.parentId
+      );
+      const currentComponent = findComponentById(
+        parentComponent.children,
+        componentMetaData.id
+      );
+      // 找出parentComponent的children中zIndex最大的值
+      const maxZIndex = parentComponent.children.reduce((prev, cur) => {
+        return Math.max(prev, cur.style["z-index"]);
+      }, 0);
+
+      // 将当前组件的zIndex设置为最大值+1
+      currentComponent.style["z-index"] = maxZIndex + 1;
+    },
+    // 置底
+    updateZIndexToBottom(state, componentMetaData) {
+      // 1.根据id找到对应的父组件
+      const parentComponent = findComponentById(
+        state.componentData,
+        componentMetaData.parentId
+      );
+      const currentComponent = findComponentById(
+        parentComponent.children,
+        componentMetaData.id
+      );
+      // 找出parentComponent的children中zIndex最小的值
+      const minZIndex = parentComponent.children.reduce((prev, cur) => {
+        return Math.min(prev, cur.style["z-index"]);
+      }, 0);
+      // 将当前组件的zIndex设置为最小值-1
+      currentComponent.style["z-index"] = minZIndex - 1 > 0 ? minZIndex - 1 : 0;
+    },
   },
   actions: {
     // 添加组件
@@ -210,6 +249,14 @@ export default new Vuex.Store({
     // 下移
     moveToBottom({ commit }, id) {
       commit("moveToBottom", id);
+    },
+    // 置顶
+    updateZIndexToTop({ commit }, metaData) {
+      commit("updateZIndexToTop", metaData);
+    },
+    // 置底
+    updateZIndexToBottom({ commit }, metaData) {
+      commit("updateZIndexToBottom", metaData);
     },
   },
   modules: {},

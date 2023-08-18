@@ -6,16 +6,12 @@
       @dragover="handleDragOver"
       @drop="handleDrop"
     >
-      <component
-        v-for="el in componentData.children"
-        :componentData="el"
-        :class="['drag-element']"
-        draggable="true"
-        @dragstart="(e) => handleDragStart(e, el)"
-        :is="el.componentName"
-        :key="el.id"
-        :style="el.style"
-      ></component>
+      <widget-wrapper
+        v-for="component in componentData.children"
+        :componentData="component"
+        :key="component.id"
+        :parentId="componentData.id"
+      />
     </div>
   </div>
 </template>
@@ -38,27 +34,27 @@ export default {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
-    handleDragStart(e, widgetItem) {
-      e.stopPropagation();
-      e.dataTransfer.effectAllowed = "copy";
-      e.dataTransfer.setData("text/plain", widgetItem.componentName);
-      let data;
-      if (!widgetItem.id) {
-        data = {
-          componentName: widgetItem.componentName,
-          id: widgetItem.id + widgetItem.componentName,
-        };
-      } else {
-        data = {
-          componentName: widgetItem.componentName,
-          id: widgetItem.id,
-        };
-      }
-      e.dataTransfer.setData("application/json", JSON.stringify(data));
-    },
+    // handleDragStart(e, widgetItem) {
+    //   e.stopPropagation();
+    //   e.dataTransfer.effectAllowed = "copy";
+    //   e.dataTransfer.setData("text/plain", widgetItem.componentName);
+    //   let data;
+    //   if (!widgetItem.id) {
+    //     data = {
+    //       componentName: widgetItem.componentName,
+    //       id: widgetItem.id + widgetItem.componentName,
+    //     };
+    //   } else {
+    //     data = {
+    //       componentName: widgetItem.componentName,
+    //       id: widgetItem.id,
+    //     };
+    //   }
+    //   e.dataTransfer.setData("application/json", JSON.stringify(data));
+    // },
     handleDrop(e) {
+      console.log("handleDrop e:", e);
       e.preventDefault();
-      e.stopPropagation();
       const transferData =
         e.dataTransfer.getData("application/json") &&
         JSON.parse(e.dataTransfer.getData("application/json"));
@@ -112,7 +108,7 @@ export default {
           0.5 * parseInt(initHeight) -
           scrollTop;
         const hasExistComponentStyle = {
-          ...widget.style,
+          ...hasExistComponent.style,
           position: "absolute",
           top: `${positionY}px`,
           left: `${positionX}px`,

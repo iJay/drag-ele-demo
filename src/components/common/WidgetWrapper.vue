@@ -16,12 +16,12 @@
       ></i>
       <i
         class="operation-icon el-icon-top"
-        title="置顶"
+        title="置于顶部"
         @click="handleMoveToTop"
       ></i>
       <i
         class="operation-icon el-icon-bottom"
-        title="置底"
+        title="置于底部"
         @click="handleMoveToBottom"
       ></i>
       <i
@@ -103,6 +103,7 @@ export default {
     },
     handleDragStart(e) {
       if (!this.isResizing) {
+        this.updateSelectedComponent(this.componentData.id);
         const widgetItem = this.componentData;
         e.dataTransfer.effectAllowed = "copy";
         e.dataTransfer.setData("text/plain", widgetItem.componentName);

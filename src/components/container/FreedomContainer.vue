@@ -34,24 +34,6 @@ export default {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
-    // handleDragStart(e, widgetItem) {
-    //   e.stopPropagation();
-    //   e.dataTransfer.effectAllowed = "copy";
-    //   e.dataTransfer.setData("text/plain", widgetItem.componentName);
-    //   let data;
-    //   if (!widgetItem.id) {
-    //     data = {
-    //       componentName: widgetItem.componentName,
-    //       id: widgetItem.id + widgetItem.componentName,
-    //     };
-    //   } else {
-    //     data = {
-    //       componentName: widgetItem.componentName,
-    //       id: widgetItem.id,
-    //     };
-    //   }
-    //   e.dataTransfer.setData("application/json", JSON.stringify(data));
-    // },
     handleDrop(e) {
       console.log("handleDrop e:", e);
       e.preventDefault();

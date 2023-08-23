@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      "updateComponentAttr",
+      "updateComponentStyle",
       "moveToTop",
       "moveToBottom",
       "deleteComponent",
@@ -98,7 +98,7 @@ export default {
     },
     stopResize(e) {
       e.stopPropagation();
-      this.updateComponentAttr({
+      this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "height",
         attrValue: `${this.newHeight}px`,

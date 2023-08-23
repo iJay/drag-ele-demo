@@ -63,7 +63,6 @@ export default {
             scrollTop;
           componentOpt.style = {
             ...widget.style,
-            position: "absolute",
             top: `${positionY}px`,
             left: `${positionX}px`,
           };
@@ -72,34 +71,6 @@ export default {
             component: componentOpt,
           });
         }
-      } else {
-        // 重新定义拖拽元素在容器内释放的位置
-        // 这里的元素宽高需要给每一个组件一个初始值，放在widget属性里面
-        const { initWidth, initHeight } =
-          getWidgetInitAttr()[hasExistComponent.componentName];
-        const positionX =
-          e.pageX -
-          this.$refs.contentContainer.getBoundingClientRect().x -
-          this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
-        const positionY =
-          e.pageY -
-          this.$refs.contentContainer.getBoundingClientRect().y -
-          0.5 * parseInt(initHeight) -
-          scrollTop;
-        const hasExistComponentStyle = {
-          ...hasExistComponent.style,
-          position: "absolute",
-          top: `${positionY}px`,
-          left: `${positionX}px`,
-        };
-        // 修改组件属性
-        this.updateComponentAttr({
-          id: hasExistComponent.id,
-          attrKey: "style",
-          attrValue: hasExistComponentStyle,
-        });
       }
     },
   },

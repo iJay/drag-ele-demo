@@ -5,13 +5,17 @@ import { generateId } from "../utils";
 Vue.use(Vuex);
 
 // 更新组件属性
-function updateComponentAttr(componentData, componentMetaData) {
+function updateComponentStyle(componentData, componentMetaData) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === componentMetaData.id) {
-      componentData[i][componentMetaData.attrKey] = componentMetaData.attrValue;
+      const attrKey = componentMetaData.attrKey;
+      componentData[i].style = {
+        ...componentData[i].style,
+        [attrKey]: componentMetaData.attrValue,
+      };
       break;
     } else {
-      updateComponentAttr(componentData[i].children, componentMetaData);
+      updateComponentStyle(componentData[i].children, componentMetaData);
     }
   }
 }
@@ -129,8 +133,8 @@ export default new Vuex.Store({
       }
     },
     // 修改组件属性
-    updateComponentAttr(state, componentMetaData) {
-      updateComponentAttr(state.componentData, componentMetaData);
+    updateComponentStyle(state, componentMetaData) {
+      updateComponentStyle(state.componentData, componentMetaData);
     },
     // 修改拖拽初始化坐标
     changeCoordinate(state, coordinate) {
@@ -204,8 +208,8 @@ export default new Vuex.Store({
       commit("changeCoordinate", coordinate);
     },
     // 修改组件属性
-    updateComponentAttr({ commit }, componentMetaData) {
-      commit("updateComponentAttr", componentMetaData);
+    updateComponentStyle({ commit }, componentMetaData) {
+      commit("updateComponentStyle", componentMetaData);
     },
     // 修改选中组件
     updateSelectedComponent({ commit }, data) {

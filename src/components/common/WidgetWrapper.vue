@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      "updateComponentAttr",
+      "updateComponentStyle",
       "moveToTop",
       "moveToBottom",
       "deleteComponent",
@@ -111,7 +111,6 @@ export default {
     handleDragStart(e) {
       e.preventDefault();
       e.stopPropagation();
-      console.log("handleDragStart", e);
       this.isDragging = true;
       this.initialPageX = e.pageX;
       this.initialPageY = e.pageY;
@@ -122,26 +121,24 @@ export default {
     },
     handleDrag(e) {
       e.preventDefault();
-      console.log("handleDrag", e);
       if (this.isDragging) {
         const deltaX = e.pageX - this.initialPageX;
         const deltaY = e.pageY - this.initialPageY;
+        console.log(deltaX, deltaY);
         this.eleNewPositionX = this.eleStartPositionX + deltaX;
         this.eleNewPositionY = this.eleStartPositionY + deltaY;
-        console.log("handleDrag", this.eleNewPositionX, this.eleNewPositionY);
         this.$refs.widgetWrapper.style.left = `${this.eleNewPositionX}px`;
         this.$refs.widgetWrapper.style.top = `${this.eleNewPositionY}px`;
       }
     },
     stopDrag() {
-      console.log("stopDrag");
       this.isDragging = false;
-      this.updateComponentAttr({
+      this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "top",
         attrValue: `${this.eleNewPositionX}px`,
       });
-      this.updateComponentAttr({
+      this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "left",
         attrValue: `${this.eleNewPositionY}px`,
@@ -150,7 +147,6 @@ export default {
       document.removeEventListener("mouseup", this.stopDrag);
     },
     handleStartResize(event, item) {
-      console.log("handleStartResize");
       event.stopPropagation();
       event.preventDefault();
       this.dragDotIndex = item;
@@ -175,7 +171,6 @@ export default {
           if (this.dragDotIndex === 2) {
             this.newWidth = this.startWidth - deltaX;
             this.positionX = this.positionStartX + deltaX;
-            console.log("this.positionX", this.positionX);
             this.$refs.widgetWrapper.style.left = `${this.positionX}px`;
           } else {
             this.newWidth = this.startWidth + deltaX;
@@ -186,7 +181,6 @@ export default {
           if (this.dragDotIndex === 1) {
             this.newHeight = this.startHeight - deltaY;
             this.positionY = this.positionStartY + deltaY;
-            console.log("this.positionY", this.positionY);
             this.$refs.widgetWrapper.style.top = `${this.positionY}px`;
           } else {
             this.newHeight = this.startHeight + deltaY;
@@ -198,24 +192,23 @@ export default {
     stopResize(e) {
       e.stopPropagation();
       // TODO: updateComponentAttr待优化 支持多个属性同时更新
-      this.updateComponentAttr({
+      this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "height",
         attrValue: `${this.newHeight}px`,
       });
-      this.updateComponentAttr({
+      this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "width",
         attrValue: `${this.newWidth}px`,
       });
       if ([1, 2].includes(this.dragDotIndex)) {
-        console.log("this.updateComponentAttr");
-        this.updateComponentAttr({
+        this.updateComponentStyle({
           id: this.componentData.id,
           attrKey: "left",
           attrValue: `${this.positionX}px`,
         });
-        this.updateComponentAttr({
+        this.updateComponentStyle({
           id: this.componentData.id,
           attrKey: "top",
           attrValue: `${this.positionY}px`,

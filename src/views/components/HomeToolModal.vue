@@ -12,7 +12,7 @@
       <h4>组件</h4>
       <ul>
         <li
-          draggable="true"
+          draggable
           @dragstart="(e) => handleDragStart(e, item)"
           v-for="item in widgets"
           :key="item.label"

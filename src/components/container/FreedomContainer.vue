@@ -35,7 +35,6 @@ export default {
       e.dataTransfer.dropEffect = "copy";
     },
     handleDrop(e) {
-      console.log("handleDrop e:", e);
       e.preventDefault();
       const transferData =
         e.dataTransfer.getData("application/json") &&

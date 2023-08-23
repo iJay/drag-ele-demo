@@ -5,8 +5,8 @@
     @click="handleSelectedClick"
     :style="componentData.style"
     ref="widgetWrapper"
-    draggable="true"
-    @dragstart="handleDragStart"
+    draggable
+    @mousedown="handleDragStart"
   >
     <div class="left-bottom-operation" v-show="selected">
       <i
@@ -50,11 +50,18 @@
 <script>
 import _ from "lodash";
 import { mapActions, mapState } from "vuex";
-import { generateId } from "@/utils";
+// import { generateId } from "@/utils";
 export default {
   name: "WidgetWrapper",
   data() {
     return {
+      isDragging: false,
+      initialPageX: 0,
+      initialPageY: 0,
+      eleNewPositionX: 0,
+      eleNewPositionY: 0,
+      eleStartPositionX: 0,
+      eleStartPositionY: 0,
       isResizing: false,
       startX: 0,
       startY: 0,
@@ -102,27 +109,47 @@ export default {
       this.updateSelectedComponent(this.componentData.id);
     },
     handleDragStart(e) {
-      if (!this.isResizing) {
-        this.updateSelectedComponent(this.componentData.id);
-        const widgetItem = this.componentData;
-        e.dataTransfer.effectAllowed = "copy";
-        e.dataTransfer.setData("text/plain", widgetItem.componentName);
-        let data;
-        if (!widgetItem.id) {
-          data = {
-            componentName: widgetItem.componentName,
-            id: generateId(),
-          };
-        } else {
-          data = {
-            componentName: widgetItem.componentName,
-            id: widgetItem.id,
-          };
-        }
-        e.dataTransfer.setData("application/json", JSON.stringify(data));
+      e.preventDefault();
+      console.log("handleDragStart", e);
+      this.isDragging = true;
+      this.initialPageX = e.pageX;
+      this.initialPageY = e.pageY;
+      this.eleStartPositionX = this.$refs.widgetWrapper.offsetLeft;
+      this.eleStartPositionY = this.$refs.widgetWrapper.offsetTop;
+      document.addEventListener("mousemove", _.throttle(this.handleDrag, 100));
+      document.addEventListener("mouseup", this.stopDrag);
+    },
+    handleDrag(e) {
+      e.preventDefault();
+      console.log("handleDrag", e);
+      if (this.isDragging) {
+        const deltaX = e.pageX - this.initialPageX;
+        const deltaY = e.pageY - this.initialPageY;
+        this.eleNewPositionX = this.eleStartPositionX + deltaX;
+        this.eleNewPositionY = this.eleStartPositionY + deltaY;
+        console.log("handleDrag", this.eleNewPositionX, this.eleNewPositionY);
+        this.$refs.widgetWrapper.style.left = `${this.eleNewPositionX}px`;
+        this.$refs.widgetWrapper.style.top = `${this.eleNewPositionY}px`;
       }
     },
+    stopDrag() {
+      console.log("stopDrag");
+      this.isDragging = false;
+      this.updateComponentAttr({
+        id: this.componentData.id,
+        attrKey: "top",
+        attrValue: `${this.eleNewPositionX}px`,
+      });
+      this.updateComponentAttr({
+        id: this.componentData.id,
+        attrKey: "left",
+        attrValue: `${this.eleNewPositionY}px`,
+      });
+      document.removeEventListener("mousemove", this.handleDrag);
+      document.removeEventListener("mouseup", this.stopDrag);
+    },
     handleStartResize(event, item) {
+      console.log("handleStartResize");
       event.stopPropagation();
       event.preventDefault();
       this.dragDotIndex = item;
@@ -131,8 +158,6 @@ export default {
       this.startX = event.clientX;
       this.positionStartX = this.$refs.widgetWrapper.offsetLeft;
       this.positionStartY = this.$refs.widgetWrapper.offsetTop;
-      console.log("this.positionStartX", this.positionStartX);
-      console.log("this.positionStartY", this.positionStartY);
       this.startHeight =
         this.$refs.wrapperComponent.$el.getBoundingClientRect().height;
       this.startWidth =

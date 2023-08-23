@@ -110,6 +110,7 @@ export default {
     },
     handleDragStart(e) {
       e.preventDefault();
+      e.stopPropagation();
       console.log("handleDragStart", e);
       this.isDragging = true;
       this.initialPageX = e.pageX;

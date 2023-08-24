@@ -62,7 +62,7 @@ export default {
       eleNewPositionX: 0,
       eleNewPositionY: 0,
       isResizing: false,
-      dragDotInitialPageY: 0,
+      dragDotInitialPageX: 0,
       dragDotInitialPageY: 0,
       startHeight: 0,
       startWidth: 0,

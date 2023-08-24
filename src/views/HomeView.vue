@@ -17,6 +17,7 @@
         ></canvas>
       </div>
       <HomeEditor />
+      <div class="rule-line" :style="ruleLinePositionStyle"></div>
     </div>
   </div>
 </template>
@@ -24,6 +25,7 @@
 <script>
 import HomeEditor from "./components/HomeEditor.vue";
 import HomeHeader from "./components/HomeHeader.vue";
+import { mapState } from "vuex";
 export default {
   name: "HomeView",
   data() {
@@ -41,6 +43,23 @@ export default {
   components: {
     HomeEditor,
     HomeHeader,
+  },
+  computed: {
+    ...mapState(["currentSelectedComponent"]),
+    ruleLinePositionStyle() {
+      return {
+        top:
+          parseInt(
+            this.currentSelectedComponent &&
+              this.currentSelectedComponent.style &&
+              this.currentSelectedComponent.style.top
+          ) +
+            20 +
+            "px" || "0px",
+        left: "0px",
+        right: "0px",
+      };
+    },
   },
   mounted() {
     this.hRuleStyle.width = window.innerWidth - 20;
@@ -128,6 +147,14 @@ export default {
     box-sizing: border-box;
     padding: 20px;
     overflow: scroll;
+
+    .rule-line {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: #409eff;
+      z-index: 1999;
+    }
 
     .h-rule {
       position: absolute;

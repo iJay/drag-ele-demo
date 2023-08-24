@@ -36,6 +36,7 @@ export default {
     },
     handleDrop(e) {
       e.preventDefault();
+      e.stopPropagation();
       const transferData =
         e.dataTransfer.getData("application/json") &&
         JSON.parse(e.dataTransfer.getData("application/json"));

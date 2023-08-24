@@ -55,23 +55,23 @@ export default {
   data() {
     return {
       isDragging: false,
-      initialPageX: 0,
-      initialPageY: 0,
-      eleNewPositionX: 0,
-      eleNewPositionY: 0,
+      dragEleInitialPageX: 0,
+      dragEleInitialPageY: 0,
       eleStartPositionX: 0,
       eleStartPositionY: 0,
+      eleNewPositionX: 0,
+      eleNewPositionY: 0,
       isResizing: false,
-      startX: 0,
-      startY: 0,
+      dragDotInitialPageY: 0,
+      dragDotInitialPageY: 0,
       startHeight: 0,
       startWidth: 0,
       newHeight: 0,
       newWidth: 0,
-      positionStartX: 0,
-      positionStartY: 0,
-      positionX: 0,
-      positionY: 0,
+      dotPositionStartX: 0,
+      dotPositionStartY: 0,
+      dotPositionNewX: 0,
+      dotPositionNewY: 0,
     };
   },
   props: {
@@ -111,8 +111,8 @@ export default {
       e.preventDefault();
       e.stopPropagation();
       this.isDragging = true;
-      this.initialPageX = e.pageX;
-      this.initialPageY = e.pageY;
+      this.dragEleInitialPageX = e.pageX;
+      this.dragEleInitialPageY = e.pageY;
       this.eleStartPositionX = this.$refs.widgetWrapper.offsetLeft;
       this.eleStartPositionY = this.$refs.widgetWrapper.offsetTop;
       document.addEventListener("mousemove", _.throttle(this.handleDrag, 100));
@@ -121,8 +121,8 @@ export default {
     handleDrag(e) {
       e.preventDefault();
       if (this.isDragging) {
-        const deltaX = e.pageX - this.initialPageX;
-        const deltaY = e.pageY - this.initialPageY;
+        const deltaX = e.pageX - this.dragEleInitialPageX;
+        const deltaY = e.pageY - this.dragEleInitialPageY;
         this.eleNewPositionX = this.eleStartPositionX + deltaX;
         this.eleNewPositionY = this.eleStartPositionY + deltaY;
         // 保证拖动元素跟随鼠标移动
@@ -155,10 +155,10 @@ export default {
       event.preventDefault();
       this.dragDotIndex = item;
       this.isResizing = true;
-      this.startY = event.clientY;
-      this.startX = event.clientX;
-      this.positionStartX = this.$refs.widgetWrapper.offsetLeft;
-      this.positionStartY = this.$refs.widgetWrapper.offsetTop;
+      this.dragDotInitialPageY = event.clientY;
+      this.dragDotInitialPageY = event.clientX;
+      this.dotPositionStartX = this.$refs.widgetWrapper.offsetLeft;
+      this.dotPositionStartY = this.$refs.widgetWrapper.offsetTop;
       this.startHeight =
         this.$refs.wrapperComponent.$el.getBoundingClientRect().height;
       this.startWidth =
@@ -172,31 +172,31 @@ export default {
         let deltaX, deltaY;
         // TODO：待优化 硬编码
         if ([2, 3].includes(this.dragDotIndex)) {
-          deltaX = e.clientX - this.startX;
-          this.positionY = this.positionStartY;
+          deltaX = e.clientX - this.dragDotInitialPageY;
+          this.dotPositionNewY = this.dotPositionStartY;
           this.newHeight = this.startHeight;
           if (this.dragDotIndex === 2) {
             this.newWidth = this.startWidth - deltaX;
-            this.positionX = this.positionStartX + deltaX;
+            this.dotPositionNewX = this.dotPositionStartX + deltaX;
           } else {
             this.newWidth = this.startWidth + deltaX;
-            this.positionX = this.positionStartX;
+            this.dotPositionNewX = this.dotPositionStartX;
           }
-          this.$refs.widgetWrapper.style.left = `${this.positionX}px`;
+          this.$refs.widgetWrapper.style.left = `${this.dotPositionNewX}px`;
           this.$refs.widgetWrapper.style.width = `${this.newWidth}px`;
           this.$refs.wrapperComponent.$el.style.width = `${this.newWidth}px`;
         } else {
-          deltaY = e.clientY - this.startY;
-          this.positionX = this.positionStartX;
+          deltaY = e.clientY - this.dragDotInitialPageY;
+          this.dotPositionNewX = this.dotPositionStartX;
           this.newWidth = this.startWidth;
           if (this.dragDotIndex === 1) {
             this.newHeight = this.startHeight - deltaY;
-            this.positionY = this.positionStartY + deltaY;
+            this.dotPositionNewY = this.dotPositionStartY + deltaY;
           } else {
             this.newHeight = this.startHeight + deltaY;
-            this.positionY = this.positionStartY;
+            this.dotPositionNewY = this.dotPositionStartY;
           }
-          this.$refs.widgetWrapper.style.top = `${this.positionY}px`;
+          this.$refs.widgetWrapper.style.top = `${this.dotPositionNewY}px`;
           this.$refs.widgetWrapper.style.height = `${this.newHeight}px`;
           this.$refs.wrapperComponent.$el.style.height = `${this.newHeight}px`;
         }
@@ -215,8 +215,8 @@ export default {
         this.updateComponentStyle({
           id: this.componentData.id,
           styleObj: {
-            left: `${this.positionX}px`,
-            top: `${this.positionY}px`,
+            left: `${this.dotPositionNewX}px`,
+            top: `${this.dotPositionNewY}px`,
           },
         });
       }

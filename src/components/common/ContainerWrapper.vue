@@ -100,8 +100,9 @@ export default {
       e.stopPropagation();
       this.updateComponentStyle({
         id: this.componentData.id,
-        attrKey: "height",
-        attrValue: `${this.newHeight}px`,
+        styleObj: {
+          height: `${this.newHeight}px`,
+        },
       });
       this.isResizing = false;
       document.removeEventListener("mousemove", this.resize);

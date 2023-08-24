@@ -7,11 +7,10 @@ export const generateId = () => nanoid();
 export function updateComponentStyle(componentData, componentMetaData) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === componentMetaData.id) {
-      const attrKey = componentMetaData.attrKey;
-      // componentData[i].style[attrKey] = componentMetaData.attrValue;
+      const newStyleObj = componentMetaData.styleObj;
       componentData[i].style = {
         ...componentData[i].style,
-        [attrKey]: componentMetaData.attrValue,
+        ...newStyleObj,
       };
       break;
     } else {

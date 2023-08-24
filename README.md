@@ -52,12 +52,14 @@ componentData = [
 1. 编辑器。 ✔
 2. 渲染器。❌
 3. 容器组件FreedomContainer支持拖拽高度的功能。 ✔
-4. ImageWidget、TextWidget组件支持拖拽自身修改自身的高度，宽度。❌
+4. ImageWidget、TextWidget组件支持拖拽自身修改自身的高度，宽度。✔
 5. 容器组件FreedomContainer内部元素的拖拽支持吸附和对齐。❌
 6. ImageWidget组件支持图片上传。❌
 7. 容器组件SectionContainer支持背景图的更换。❌
 8. 抽象一个组件用于上移、下移、设置、删除、调整大小的功能。 ✔
 9. 工具箱支持自由拖拽到任意位置。❌
+10. 撤销操作。❌
+11. 恢复操作。❌
 
 ## 四、更改记录
 
@@ -65,6 +67,6 @@ componentData = [
 1. 拖拽效果不再依靠drop和dragover等WebAPI的实现，改用自定义程度更高的mousedown和mouseup事件。
 
 ### 2023-08-24 更改
-1. 优化updateComponentAttr方法，可以一次性修改多个属性值。
+1. 优化updateComponentStyle方法，可以一次性修改多个属性值。
 2. 修改改变widget元素大小，样式错乱的问题。
 

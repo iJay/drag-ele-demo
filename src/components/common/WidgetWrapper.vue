@@ -135,13 +135,10 @@ export default {
       e.stopPropagation();
       this.updateComponentStyle({
         id: this.componentData.id,
-        attrKey: "top",
-        attrValue: `${this.eleNewPositionY}px`,
-      });
-      this.updateComponentStyle({
-        id: this.componentData.id,
-        attrKey: "left",
-        attrValue: `${this.eleNewPositionX}px`,
+        styleObj: {
+          left: `${this.eleNewPositionX}px`,
+          top: `${this.eleNewPositionY}px`,
+        },
       });
       this.isDragging = false;
       document.removeEventListener("mousemove", this.handleDrag);
@@ -201,28 +198,20 @@ export default {
     },
     stopResize(e) {
       e.stopPropagation();
-      // TODO: updateComponentAttr待优化 支持多个属性同时更新
-      console.log(this.newHeight, this.newWidth);
       this.updateComponentStyle({
         id: this.componentData.id,
-        attrKey: "height",
-        attrValue: `${this.newHeight}px`,
-      });
-      this.updateComponentStyle({
-        id: this.componentData.id,
-        attrKey: "width",
-        attrValue: `${this.newWidth}px`,
+        styleObj: {
+          width: `${this.newWidth}px`,
+          height: `${this.newHeight}px`,
+        },
       });
       if ([1, 2].includes(this.dragDotIndex)) {
         this.updateComponentStyle({
           id: this.componentData.id,
-          attrKey: "left",
-          attrValue: `${this.positionX}px`,
-        });
-        this.updateComponentStyle({
-          id: this.componentData.id,
-          attrKey: "top",
-          attrValue: `${this.positionY}px`,
+          styleObj: {
+            left: `${this.positionX}px`,
+            top: `${this.positionY}px`,
+          },
         });
       }
       this.isResizing = false;

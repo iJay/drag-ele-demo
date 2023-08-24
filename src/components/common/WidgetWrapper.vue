@@ -50,7 +50,6 @@
 <script>
 import _ from "lodash";
 import { mapActions, mapState } from "vuex";
-// import { generateId } from "@/utils";
 export default {
   name: "WidgetWrapper",
   data() {
@@ -133,13 +132,20 @@ export default {
     },
     stopDrag(e) {
       e.stopPropagation();
-      this.updateComponentStyle({
-        id: this.componentData.id,
-        styleObj: {
-          left: `${this.eleNewPositionX}px`,
-          top: `${this.eleNewPositionY}px`,
-        },
-      });
+      // 新坐标为（0，0）说明未发生拖拽事件，依据此条件防止点击事件触发
+      if (
+        this.isDragging &&
+        this.eleNewPositionX !== 0 &&
+        this.eleNewPositionY !== 0
+      ) {
+        this.updateComponentStyle({
+          id: this.componentData.id,
+          styleObj: {
+            left: `${this.eleNewPositionX}px`,
+            top: `${this.eleNewPositionY}px`,
+          },
+        });
+      }
       this.isDragging = false;
       document.removeEventListener("mousemove", this.handleDrag);
       document.removeEventListener("mouseup", this.stopDrag);

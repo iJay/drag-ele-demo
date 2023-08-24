@@ -39,35 +39,30 @@ export default {
       const transferData =
         e.dataTransfer.getData("application/json") &&
         JSON.parse(e.dataTransfer.getData("application/json"));
-      const hasExistComponent = this.componentData.children.find(
-        (item) => item.id === transferData.id
-      );
       const widget = this.$store.state.widgets.find(
         (item) => item.componentName === transferData.componentName
       );
-      if (!hasExistComponent) {
-        if (widget) {
-          const componentOpt = _.cloneDeep(widget);
-          const positionX =
-            e.pageX - this.$refs.contentContainer.getBoundingClientRect().x;
-          const scrollTop =
-            window.pageYOffset || document.documentElement.scrollTop;
-          const positionY =
-            e.pageY -
-            this.$refs.contentContainer.getBoundingClientRect().y -
-            scrollTop;
-          componentOpt.style = {
-            ...widget.style,
-            top: `${positionY}px`,
-            left: `${positionX}px`,
-            position: "absolute",
-          };
-          console.log(componentOpt);
-          this.addComponent({
-            parentId: this.componentData.id,
-            component: componentOpt,
-          });
-        }
+      if (widget) {
+        const componentOpt = _.cloneDeep(widget);
+        const positionX =
+          e.pageX - this.$refs.contentContainer.getBoundingClientRect().x;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const positionY =
+          e.pageY -
+          this.$refs.contentContainer.getBoundingClientRect().y -
+          scrollTop;
+        componentOpt.style = {
+          ...widget.style,
+          top: `${positionY}px`,
+          left: `${positionX}px`,
+          position: "absolute",
+        };
+        console.log(componentOpt);
+        this.addComponent({
+          parentId: this.componentData.id,
+          component: componentOpt,
+        });
       }
     },
   },

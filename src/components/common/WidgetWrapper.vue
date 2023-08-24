@@ -163,29 +163,38 @@ export default {
       document.addEventListener("mousemove", _.throttle(this.resize, 100));
       document.addEventListener("mouseup", this.stopResize);
     },
-    resize(event) {
+    resize(e) {
+      e.preventDefault();
       if (this.isResizing) {
         let deltaX, deltaY;
         // TODO：待优化 硬编码
         if ([2, 3].includes(this.dragDotIndex)) {
-          deltaX = event.clientX - this.startX;
+          deltaX = e.clientX - this.startX;
+          this.positionY = this.positionStartY;
+          this.newHeight = this.startHeight;
           if (this.dragDotIndex === 2) {
             this.newWidth = this.startWidth - deltaX;
             this.positionX = this.positionStartX + deltaX;
-            this.$refs.widgetWrapper.style.left = `${this.positionX}px`;
           } else {
             this.newWidth = this.startWidth + deltaX;
+            this.positionX = this.positionStartX;
           }
+          this.$refs.widgetWrapper.style.left = `${this.positionX}px`;
+          this.$refs.widgetWrapper.style.width = `${this.newWidth}px`;
           this.$refs.wrapperComponent.$el.style.width = `${this.newWidth}px`;
         } else {
-          deltaY = event.clientY - this.startY;
+          deltaY = e.clientY - this.startY;
+          this.positionX = this.positionStartX;
+          this.newWidth = this.startWidth;
           if (this.dragDotIndex === 1) {
             this.newHeight = this.startHeight - deltaY;
             this.positionY = this.positionStartY + deltaY;
-            this.$refs.widgetWrapper.style.top = `${this.positionY}px`;
           } else {
             this.newHeight = this.startHeight + deltaY;
+            this.positionY = this.positionStartY;
           }
+          this.$refs.widgetWrapper.style.top = `${this.positionY}px`;
+          this.$refs.widgetWrapper.style.height = `${this.newHeight}px`;
           this.$refs.wrapperComponent.$el.style.height = `${this.newHeight}px`;
         }
       }
@@ -193,6 +202,7 @@ export default {
     stopResize(e) {
       e.stopPropagation();
       // TODO: updateComponentAttr待优化 支持多个属性同时更新
+      console.log(this.newHeight, this.newWidth);
       this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "height",

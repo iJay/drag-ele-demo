@@ -8,7 +8,11 @@ export function updateComponentStyle(componentData, componentMetaData) {
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === componentMetaData.id) {
       const attrKey = componentMetaData.attrKey;
-      componentData[i].style[attrKey] = componentMetaData.attrValue;
+      // componentData[i].style[attrKey] = componentMetaData.attrValue;
+      componentData[i].style = {
+        ...componentData[i].style,
+        [attrKey]: componentMetaData.attrValue,
+      };
       break;
     } else {
       updateComponentStyle(componentData[i].children, componentMetaData);

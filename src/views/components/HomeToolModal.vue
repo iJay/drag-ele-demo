@@ -29,7 +29,6 @@
 
 <script>
 import { mapState } from "vuex";
-import { generateId } from "@/utils";
 export default {
   name: "HomeToolModal",
   props: {
@@ -43,23 +42,9 @@ export default {
   },
   methods: {
     handleDragStart(e, widgetItem) {
-      // 记录当前拖动元素的鼠标在元素内的位置
-      const mouseInEleX =
-        (e.pageX - e.currentTarget.getBoundingClientRect().x) /
-        e.currentTarget.getBoundingClientRect().width;
-      const mouseInEleY =
-        (e.pageY - e.currentTarget.getBoundingClientRect().y) /
-        e.currentTarget.getBoundingClientRect().height;
-      this.$store.dispatch("changeCoordinate", {
-        mouseInEleX,
-        mouseInEleY,
-      });
       e.dataTransfer.effectAllowed = "copy";
       e.dataTransfer.setData("text/plain", widgetItem.componentName);
-      const data = {
-        componentName: widgetItem.componentName,
-        id: generateId(),
-      };
+      const data = { componentName: widgetItem.componentName };
       e.dataTransfer.setData("application/json", JSON.stringify(data));
     },
   },

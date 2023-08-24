@@ -63,5 +63,8 @@ componentData = [
 
 ### 2023-08-23 更改
 1. 拖拽效果不再依靠drop和dragover等WebAPI的实现，改用自定义程度更高的mousedown和mouseup事件。
-2. 优化updateComponentAttr方法，可以一次性修改多个属性值。
+
+### 2023-08-24 更改
+1. 优化updateComponentAttr方法，可以一次性修改多个属性值。
+2. 修改改变widget元素大小，样式错乱的问题。
 

@@ -19,7 +19,6 @@
 <script>
 import _ from "lodash";
 import { mapActions } from "vuex";
-import getWidgetInitAttr from "@/config/widgetInitAttr.js";
 export default {
   name: "FreedomConatiner",
   props: {
@@ -29,7 +28,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["addComponent", "updateComponentAttr"]),
+    ...mapActions(["addComponent"]),
     handleDragOver(e) {
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
@@ -49,24 +48,21 @@ export default {
       if (!hasExistComponent) {
         if (widget) {
           const componentOpt = _.cloneDeep(widget);
-          const { initWidth, initHeight } =
-            getWidgetInitAttr()[componentOpt.componentName];
           const positionX =
-            e.pageX -
-            this.$refs.contentContainer.getBoundingClientRect().x -
-            this.$store.state.coordinate.mouseInEleX * parseInt(initWidth);
+            e.pageX - this.$refs.contentContainer.getBoundingClientRect().x;
           const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
           const positionY =
             e.pageY -
             this.$refs.contentContainer.getBoundingClientRect().y -
-            0.5 * parseInt(initHeight) -
             scrollTop;
           componentOpt.style = {
             ...widget.style,
             top: `${positionY}px`,
             left: `${positionX}px`,
+            position: "absolute",
           };
+          console.log(componentOpt);
           this.addComponent({
             parentId: this.componentData.id,
             component: componentOpt,

@@ -124,25 +124,26 @@ export default {
       if (this.isDragging) {
         const deltaX = e.pageX - this.initialPageX;
         const deltaY = e.pageY - this.initialPageY;
-        console.log(deltaX, deltaY);
         this.eleNewPositionX = this.eleStartPositionX + deltaX;
         this.eleNewPositionY = this.eleStartPositionY + deltaY;
+        // 保证拖动元素跟随鼠标移动
         this.$refs.widgetWrapper.style.left = `${this.eleNewPositionX}px`;
         this.$refs.widgetWrapper.style.top = `${this.eleNewPositionY}px`;
       }
     },
-    stopDrag() {
-      this.isDragging = false;
+    stopDrag(e) {
+      e.stopPropagation();
       this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "top",
-        attrValue: `${this.eleNewPositionX}px`,
+        attrValue: `${this.eleNewPositionY}px`,
       });
       this.updateComponentStyle({
         id: this.componentData.id,
         attrKey: "left",
-        attrValue: `${this.eleNewPositionY}px`,
+        attrValue: `${this.eleNewPositionX}px`,
       });
+      this.isDragging = false;
       document.removeEventListener("mousemove", this.handleDrag);
       document.removeEventListener("mouseup", this.stopDrag);
     },

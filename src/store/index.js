@@ -1,75 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { generateId } from "../utils";
+import _ from "lodash";
+import {
+  generateId,
+  updateComponentStyle,
+  findComponentById,
+  deleteComponentById,
+  moveToTop,
+  moveToBottom,
+} from "../utils";
 
 Vue.use(Vuex);
-
-// 更新组件属性
-function updateComponentStyle(componentData, componentMetaData) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === componentMetaData.id) {
-      const attrKey = componentMetaData.attrKey;
-      componentData[i].style = {
-        ...componentData[i].style,
-        [attrKey]: componentMetaData.attrValue,
-      };
-      break;
-    } else {
-      updateComponentStyle(componentData[i].children, componentMetaData);
-    }
-  }
-}
-
-// 根据id查询相应组件 并返回该组件
-function findComponentById(componentData, id) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id) {
-      return componentData[i];
-    } else {
-      const foundComponent = findComponentById(componentData[i].children, id);
-      if (foundComponent) {
-        return foundComponent; // 如果在子组件中找到了，返回子组件
-      }
-    }
-  }
-  return null; // 如果未找到组件，返回 null
-}
-
-// 根据id删除组件
-function deleteComponentById(componentData, id) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id) {
-      componentData.splice(i, 1);
-      break;
-    } else {
-      deleteComponentById(componentData[i].children, id);
-    }
-  }
-}
-
-// 上移
-function moveToTop(componentData, id) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id && componentData[i - 1]) {
-      const deleteItem = componentData.splice(i, 1);
-      // 上移到前一个位置
-      componentData.splice(i - 1, 0, deleteItem[0]);
-      break;
-    }
-  }
-}
-
-// 下移
-function moveToBottom(componentData, id) {
-  for (let i = 0; i < componentData.length; i++) {
-    if (componentData[i].id === id && componentData[i + 1]) {
-      const deleteItem = componentData.splice(i, 1);
-      // 下移到后一个位置
-      componentData.splice(i + 1, 0, deleteItem[0]);
-      break;
-    }
-  }
-}
 
 export default new Vuex.Store({
   state: {
@@ -85,8 +26,10 @@ export default new Vuex.Store({
         label: "图片组件",
         componentName: "image-widget",
         icon: require("../assets/image-icon.svg"),
-        selected: false,
-        style: {},
+        style: {
+          width: "160px",
+          height: "160px",
+        },
         children: [],
       },
       {
@@ -94,7 +37,6 @@ export default new Vuex.Store({
         label: "文本组件",
         componentName: "text-widget",
         icon: require("../assets/text-icon.svg"),
-        selected: false,
         style: {},
         children: [],
       },
@@ -103,7 +45,6 @@ export default new Vuex.Store({
         label: "自由容器",
         componentName: "freedom-container",
         icon: require("../assets/freedom-container.svg"),
-        selected: false,
         style: {
           position: "relative",
         },
@@ -115,9 +56,9 @@ export default new Vuex.Store({
   mutations: {
     // 添加组件
     addComponent(state, componentMetaData) {
+      componentMetaData.component.id = generateId();
       // 1.根据id找到对应的父组件
       if (componentMetaData.parentId) {
-        componentMetaData.component.id = generateId();
         const parentComponent = findComponentById(
           state.componentData,
           componentMetaData.parentId
@@ -128,8 +69,8 @@ export default new Vuex.Store({
         parentComponent.children.push(componentMetaData.component);
       } else {
         // 3.如果没有parentId 说明是根组件 直接添加到根组件中
-        componentMetaData.component.id = generateId();
-        state.componentData.push(componentMetaData.component);
+        const childComponent = _.cloneDeep(componentMetaData.component);
+        state.componentData.push(childComponent);
       }
     },
     // 修改组件属性
@@ -146,7 +87,7 @@ export default new Vuex.Store({
         state.componentData,
         id
       );
-      state.currentSelectedComponent = currentSelectedComponent;
+      state.currentSelectedComponent = _.cloneDeep(currentSelectedComponent);
     },
     // 删除组件
     deleteComponent(state, id) {

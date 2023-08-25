@@ -48,6 +48,7 @@ export default {
     ...mapState(["currentSelectedComponent"]),
     ruleLinePositionStyle() {
       return {
+        // TODO: 位置计算取值有问题 应该是取得当前选中组件的pageX和pageY
         top:
           parseInt(
             this.currentSelectedComponent &&

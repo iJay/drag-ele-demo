@@ -21,7 +21,7 @@ export default new Vuex.Store({
         id: 0,
         label: "图片组件",
         componentName: "image-widget",
-        icon: require("../assets/image-icon.svg"),
+        icon: require("../assets/image-icon.png"),
         style: {
           width: "160px",
           height: "160px",

@@ -24,7 +24,9 @@ export default {
     },
   },
   methods: {
-    handleDblClick() {
+    handleDblClick(e) {
+      console.log("handleDblClick");
+      e.stopPropagation();
       this.contenteditable = true;
     },
   },

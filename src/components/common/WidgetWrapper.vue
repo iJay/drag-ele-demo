@@ -204,22 +204,16 @@ export default {
     },
     stopResize(e) {
       e.stopPropagation();
+      const styleObj = {
+        width: `${this.newWidth}px`,
+        height: `${this.newHeight}px`,
+        left: `${this.positionX}px`,
+        top: `${this.positionY}px`,
+      };
       this.updateComponentStyle({
         id: this.componentData.id,
-        styleObj: {
-          width: `${this.newWidth}px`,
-          height: `${this.newHeight}px`,
-        },
+        ...styleObj,
       });
-      if ([1, 2].includes(this.dragDotIndex)) {
-        this.updateComponentStyle({
-          id: this.componentData.id,
-          styleObj: {
-            left: `${this.positionX}px`,
-            top: `${this.positionY}px`,
-          },
-        });
-      }
       this.isResizing = false;
       document.removeEventListener("mousemove", this.resize);
       document.removeEventListener("mouseup", this.stopResize);

@@ -17,7 +17,11 @@
         ></canvas>
       </div>
       <HomeEditor />
-      <div class="rule-line" :style="ruleLinePositionStyle"></div>
+      <div
+        class="rule-line"
+        :style="ruleLinePositionStyle"
+        ref="hRuleLine"
+      ></div>
     </div>
   </div>
 </template>
@@ -25,7 +29,7 @@
 <script>
 import HomeEditor from "./components/HomeEditor.vue";
 import HomeHeader from "./components/HomeHeader.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "HomeView",
   data() {
@@ -67,9 +71,11 @@ export default {
     this.vRuleStyle.height = window.innerHeight * 4;
     this.$nextTick(() => {
       this.drawRule();
+      this.updateRuleLine(this.$refs.hRuleLine);
     });
   },
   methods: {
+    ...mapActions(["updateRuleLine"]),
     drawRule() {
       this.drawHRule();
       this.drawVRule();
@@ -150,6 +156,7 @@ export default {
     overflow: scroll;
 
     .rule-line {
+      display: none;
       position: absolute;
       width: 100%;
       height: 1px;

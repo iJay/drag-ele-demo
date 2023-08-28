@@ -14,6 +14,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    ruleLine: null, // 卡尺的引用
     currentSelectedComponent: null, // 当前选中的组件
     componentData: [], // 数据源
     widgets: [
@@ -134,6 +135,9 @@ export default new Vuex.Store({
       // 将当前组件的zIndex设置为最小值-1
       currentComponent.style["z-index"] = minZIndex - 1 > 0 ? minZIndex - 1 : 0;
     },
+    updateRuleLine(state, ruleLine) {
+      state.ruleLine = ruleLine;
+    },
   },
   actions: {
     // 添加组件
@@ -171,6 +175,10 @@ export default new Vuex.Store({
     // 置底
     updateZIndexToBottom({ commit }, metaData) {
       commit("updateZIndexToBottom", metaData);
+    },
+    // 更新卡尺的引用
+    updateRuleLine({ commit }, ruleLine) {
+      commit("updateRuleLine", ruleLine);
     },
   },
   modules: {},

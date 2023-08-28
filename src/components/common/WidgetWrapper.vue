@@ -85,7 +85,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["currentSelectedComponent"]),
+    ...mapState(["currentSelectedComponent", "ruleLine"]),
     selected() {
       return (
         this.currentSelectedComponent &&
@@ -128,7 +128,13 @@ export default {
         // 保证拖动元素跟随鼠标移动
         this.$refs.widgetWrapper.style.left = `${this.eleNewPositionX}px`;
         this.$refs.widgetWrapper.style.top = `${this.eleNewPositionY}px`;
+        this.updateRuleLine(e);
       }
+    },
+    updateRuleLine(e) {
+      const ruleLineTopPosition = e.pageY - e.offsetY - 60;
+      this.ruleLine.style.display = "block";
+      this.ruleLine.style.top = `${ruleLineTopPosition}px`;
     },
     stopDrag(e) {
       e.stopPropagation();
@@ -147,6 +153,7 @@ export default {
         });
       }
       this.isDragging = false;
+      this.ruleLine.style.display = "none";
       document.removeEventListener("mousemove", this.handleDrag);
       document.removeEventListener("mouseup", this.stopDrag);
     },

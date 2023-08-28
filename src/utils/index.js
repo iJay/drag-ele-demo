@@ -5,7 +5,6 @@ export const generateId = () => nanoid();
 
 // 更新组件属性
 export function updateComponentStyle(componentData, componentMetaData) {
-  console.log("updateComponentStyle callback");
   for (let i = 0; i < componentData.length; i++) {
     if (componentData[i].id === componentMetaData.id) {
       const newStyleObj = componentMetaData.styleObj;

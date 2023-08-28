@@ -67,7 +67,6 @@ export default new Vuex.Store({
         // 3.如果没有parentId 说明是根组件 直接添加到根组件中
         const childComponent = _.cloneDeep(componentMetaData.component);
         state.componentData.push(childComponent);
-        console.log("state.componentData", state.componentData);
       }
     },
     // 修改组件属性
@@ -80,13 +79,10 @@ export default new Vuex.Store({
     },
     // 修改选中组件
     updateSelectedComponent(state, id) {
-      console.log("id", id);
-      console.log("state.componentData", state.componentData);
       const currentSelectedComponent = findComponentById(
         state.componentData,
         id
       );
-      console.log("currentSelectedComponent", currentSelectedComponent);
       state.currentSelectedComponent = _.cloneDeep(currentSelectedComponent);
     },
     // 删除组件

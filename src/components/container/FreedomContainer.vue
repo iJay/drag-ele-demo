@@ -58,7 +58,6 @@ export default {
           left: `${positionX}px`,
           position: "absolute",
         };
-        console.log(componentOpt);
         this.addComponent({
           parentId: this.componentData.id,
           component: componentOpt,

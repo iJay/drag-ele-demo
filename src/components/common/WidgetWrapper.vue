@@ -131,10 +131,16 @@ export default {
         this.updateRuleLine(e);
       }
     },
-    updateRuleLine(e) {
-      const ruleLineTopPosition = e.pageY - e.offsetY - 60;
-      this.ruleLine.style.display = "block";
-      this.ruleLine.style.top = `${ruleLineTopPosition}px`;
+    updateRuleLine() {
+      this.ruleLine.$el.style.display = "block";
+      this.ruleLine.eleSize = {
+        width: this.$refs.wrapperComponent.$el.getBoundingClientRect().width,
+        height: this.$refs.wrapperComponent.$el.getBoundingClientRect().height,
+      };
+      this.ruleLine.elePosition = {
+        x: this.eleNewPositionX + 20,
+        y: this.eleNewPositionY + 20,
+      };
     },
     stopDrag(e) {
       e.stopPropagation();
@@ -153,7 +159,7 @@ export default {
         });
       }
       this.isDragging = false;
-      this.ruleLine.style.display = "none";
+      this.ruleLine.$el.style.display = "none";
       document.removeEventListener("mousemove", this.handleDrag);
       document.removeEventListener("mouseup", this.stopDrag);
     },
@@ -207,6 +213,7 @@ export default {
           this.$refs.widgetWrapper.style.height = `${this.newHeight}px`;
           this.$refs.wrapperComponent.$el.style.height = `${this.newHeight}px`;
         }
+        this.updateRuleLine(e);
       }
     },
     stopResize(e) {

@@ -22,6 +22,7 @@
         :style="ruleLinePositionStyle"
         ref="hRuleLine"
       ></div>
+      <HomeMarkLine />
     </div>
   </div>
 </template>
@@ -29,7 +30,8 @@
 <script>
 import HomeEditor from "./components/HomeEditor.vue";
 import HomeHeader from "./components/HomeHeader.vue";
-import { mapState, mapActions } from "vuex";
+import HomeMarkLine from "./components/HomeMarkLine.vue";
+import { mapState } from "vuex";
 export default {
   name: "HomeView",
   data() {
@@ -47,20 +49,14 @@ export default {
   components: {
     HomeEditor,
     HomeHeader,
+    HomeMarkLine,
   },
   computed: {
     ...mapState(["currentSelectedComponent"]),
     ruleLinePositionStyle() {
       return {
         // TODO: 位置计算取值有问题 应该是取得当前选中组件的pageX和pageY
-        top:
-          parseInt(
-            this.currentSelectedComponent &&
-              this.currentSelectedComponent.style &&
-              this.currentSelectedComponent.style.top
-          ) +
-            20 +
-            "px" || "0px",
+        top: "0px",
         left: "0px",
         right: "0px",
       };
@@ -71,11 +67,11 @@ export default {
     this.vRuleStyle.height = window.innerHeight * 4;
     this.$nextTick(() => {
       this.drawRule();
-      this.updateRuleLine(this.$refs.hRuleLine);
+      // this.updateRuleLine(this.$refs.hRuleLine);
     });
   },
   methods: {
-    ...mapActions(["updateRuleLine"]),
+    // ...mapActions(["updateRuleLine"]),
     drawRule() {
       this.drawHRule();
       this.drawVRule();

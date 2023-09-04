@@ -6,12 +6,15 @@
       @dragover="handleDragOver"
       @drop="handleDrop"
     >
-      <widget-wrapper
-        v-for="component in componentData.children"
-        :componentData="component"
-        :key="component.id"
-        :parentId="componentData.id"
-      />
+      <template v-if="mode === 'edit'">
+        <widget-wrapper
+          v-for="component in componentData.children"
+          :componentData="component"
+          :key="component.id"
+          :parentId="componentData.id"
+        />
+      </template>
+      <slot v-else></slot>
     </div>
   </div>
 </template>
@@ -22,6 +25,10 @@ import { mapActions } from "vuex";
 export default {
   name: "FreedomConatiner",
   props: {
+    mode: {
+      type: String,
+      default: "edit",
+    },
     componentData: {
       type: Object,
       default: () => {},

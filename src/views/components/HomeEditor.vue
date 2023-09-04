@@ -26,7 +26,7 @@ export default {
     ...mapActions(["addComponent", "updateSelected"]),
     handleCreatePage() {
       const componentOpt = {
-        componentName: "MainContainer",
+        componentName: "main-container",
         style: {
           width: "1200px",
         },

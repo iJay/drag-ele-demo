@@ -21,27 +21,43 @@
         <el-button size="mini"> 撤销 </el-button>
         <el-button size="mini"> 恢复 </el-button>
         <el-button type="primary" size="mini"> 保存 </el-button>
-        <el-button size="mini"> 预览 </el-button>
+        <el-button size="mini" @click="handlePreview"> 预览 </el-button>
       </div>
     </div>
     <home-tool-modal
       v-show="isShowToolModal"
       @close="isShowToolModal = false"
     />
+    <el-dialog
+      title="页面预览"
+      :visible.sync="isShowPreview"
+      width="80%"
+      :before-close="handleClosePreview"
+      fullscreen
+    >
+      <home-preview :componentData="componentData" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import HomeToolModal from "./HomeToolModal.vue";
+import HomePreview from "./HomePreview";
+import { mapState } from "vuex";
 export default {
   name: "HomeHeader",
   components: {
     HomeToolModal,
+    HomePreview,
   },
   data() {
     return {
       isShowToolModal: false,
+      isShowPreview: false,
     };
+  },
+  computed: {
+    ...mapState(["componentData"]),
   },
   methods: {
     handleShowToolsModal() {
@@ -49,6 +65,12 @@ export default {
     },
     handleCloseToolModal() {
       this.isShowToolModal = false;
+    },
+    handlePreview() {
+      this.isShowPreview = true;
+    },
+    handleClosePreview() {
+      this.isShowPreview = false;
     },
   },
 };

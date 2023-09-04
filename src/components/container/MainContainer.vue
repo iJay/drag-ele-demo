@@ -1,17 +1,24 @@
 <template>
   <div class="main-container">
-    <container-wrapper
-      v-for="component in componentData.children"
-      :key="component.id"
-      :componentData="component"
-      :style="component.style"
-    />
+    <template v-if="mode === 'edit'">
+      <container-wrapper
+        v-for="component in componentData.children"
+        :key="component.id"
+        :componentData="component"
+        :style="component.style"
+      />
+    </template>
+    <slot v-else></slot>
   </div>
 </template>
 
 <script>
 export default {
   props: {
+    mode: {
+      type: String,
+      default: "edit",
+    },
     componentData: {
       type: Object,
       default: () => {},

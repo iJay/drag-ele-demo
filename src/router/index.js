@@ -10,6 +10,11 @@ const routes = [
     name: "home",
     component: HomeView,
   },
+  // {
+  //   path: "/preview",
+  //   name: "preview",
+  //   component: () => import("../views/PreviewView.vue"),
+  // },
 ];
 
 const router = new VueRouter({

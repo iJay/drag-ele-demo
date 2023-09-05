@@ -137,9 +137,11 @@ export default {
         width: this.$refs.wrapperComponent.$el.getBoundingClientRect().width,
         height: this.$refs.wrapperComponent.$el.getBoundingClientRect().height,
       };
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       this.ruleLine.elePosition = {
         x: this.$refs.widgetWrapper.getBoundingClientRect().x,
-        y: this.$refs.widgetWrapper.getBoundingClientRect().y - 60,
+        y: this.$refs.widgetWrapper.getBoundingClientRect().y + scrollTop - 60,
       };
     },
     stopDrag(e) {

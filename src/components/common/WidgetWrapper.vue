@@ -137,9 +137,11 @@ export default {
         width: this.$refs.wrapperComponent.$el.getBoundingClientRect().width,
         height: this.$refs.wrapperComponent.$el.getBoundingClientRect().height,
       };
+      console.log(this.$refs.widgetWrapper.getBoundingClientRect().x);
+      console.log(this.$refs.widgetWrapper.getBoundingClientRect().y);
       this.ruleLine.elePosition = {
-        x: this.eleNewPositionX + 20,
-        y: this.eleNewPositionY + 20,
+        x: this.$refs.widgetWrapper.getBoundingClientRect().x,
+        y: this.$refs.widgetWrapper.getBoundingClientRect().y - 60,
       };
     },
     stopDrag(e) {

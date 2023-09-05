@@ -50,10 +50,10 @@ componentData = [
 ## 三、截止到8月20日需要完成的功能点
 
 1. 编辑器。 ✔
-2. 渲染器。❌
+2. 渲染器。✔
 3. 容器组件FreedomContainer支持拖拽高度的功能。 ✔
 4. ImageWidget、TextWidget组件支持拖拽自身修改自身的高度，宽度。✔
-5. 容器组件FreedomContainer内部元素的拖拽支持吸附和对齐。❌
+5. 容器组件FreedomContainer内部元素的拖拽支持对齐。✔
 6. ImageWidget组件支持图片上传。❌
 7. 容器组件SectionContainer支持背景图的更换。❌
 8. 抽象一个组件用于上移、下移、设置、删除、调整大小的功能。 ✔
@@ -76,3 +76,6 @@ componentData = [
 2. 优化容器内z-index的计算方法问题。
 3. 确认并区分Main容器和Freedom容器的功能点。
 4. 修改拖拽元素宽高，元素位置发生偏移的问题。
+
+### 2023-09-05 更新
+1. 实现并优化容器内元素的吸附对齐问题。

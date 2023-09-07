@@ -25,6 +25,7 @@ import { mapActions } from "vuex";
 export default {
   name: "FreedomConatiner",
   props: {
+    // edit or preview
     mode: {
       type: String,
       default: "edit",

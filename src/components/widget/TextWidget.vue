@@ -25,7 +25,6 @@ export default {
   },
   methods: {
     handleDblClick(e) {
-      console.log("handleDblClick");
       e.stopPropagation();
       this.contenteditable = true;
     },

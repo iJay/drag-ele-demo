@@ -17,6 +17,8 @@ export default new Vuex.Store({
     ruleLine: null, // 卡尺的引用
     currentSelectedComponent: null, // 当前选中的组件
     componentData: [], // 数据源
+    recordSnapshot: [], // 撤销重做的快照
+    snapshotIndex: -1, // 快照索引
     widgets: [
       {
         id: 0,
@@ -138,19 +140,44 @@ export default new Vuex.Store({
     updateRuleLine(state, ruleLine) {
       state.ruleLine = ruleLine;
     },
+    // 撤销
+    undoSnapshot(state) {
+      if (state.snapshotIndex >= 0) {
+        state.snapshotIndex--;
+        const snapshot = _.cloneDeep(state.recordSnapshot[state.snapshotIndex]);
+        state.componentData = snapshot;
+      }
+    },
+    // 恢复
+    redoSnapshot(state) {
+      if (state.snapshotIndex < state.recordSnapshot.length - 1) {
+        state.snapshotIndex++;
+        const snapshot = _.cloneDeep(state.recordSnapshot[state.snapshotIndex]);
+        state.componentData = snapshot;
+      }
+    },
+    // 保存
+    saveSnapshot(state) {
+      state.snapshotIndex++;
+      const snapshot = _.cloneDeep(state.componentData);
+      state.recordSnapshot.push(snapshot);
+    },
   },
   actions: {
     // 添加组件
     addComponent({ commit }, componentMetaData) {
       commit("addComponent", componentMetaData);
+      commit("saveSnapshot");
     },
     // 修改组件定位坐标
     changeCoordinate({ commit }, coordinate) {
       commit("changeCoordinate", coordinate);
+      commit("saveSnapshot");
     },
     // 修改组件属性
     updateComponentStyle({ commit }, componentMetaData) {
       commit("updateComponentStyle", componentMetaData);
+      commit("saveSnapshot");
     },
     // 修改选中组件
     updateSelectedComponent({ commit }, data) {
@@ -159,26 +186,43 @@ export default new Vuex.Store({
     // 删除组件
     deleteComponent({ commit }, id) {
       commit("deleteComponent", id);
+      commit("saveSnapshot");
     },
     // 上移
     moveToTop({ commit }, id) {
       commit("moveToTop", id);
+      commit("saveSnapshot");
     },
     // 下移
     moveToBottom({ commit }, id) {
       commit("moveToBottom", id);
+      commit("saveSnapshot");
     },
     // 置顶
     updateZIndexToTop({ commit }, metaData) {
       commit("updateZIndexToTop", metaData);
+      commit("saveSnapshot");
     },
     // 置底
     updateZIndexToBottom({ commit }, metaData) {
       commit("updateZIndexToBottom", metaData);
+      commit("saveSnapshot");
     },
     // 更新卡尺的引用
     updateRuleLine({ commit }, ruleLine) {
       commit("updateRuleLine", ruleLine);
+    },
+    // 撤销
+    undoSnapshot({ commit }) {
+      commit("undoSnapshot");
+    },
+    // 重做
+    redoSnapshot({ commit }) {
+      commit("redoSnapshot");
+    },
+    // 保存
+    saveSnapshot({ commmit }) {
+      commmit("saveSnapshot");
     },
   },
   modules: {},

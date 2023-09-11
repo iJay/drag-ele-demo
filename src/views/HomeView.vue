@@ -24,6 +24,16 @@
       ></div>
       <HomeMarkLine />
     </div>
+    <template v-if="currentSelectedComponent">
+      <el-dialog
+        title="组件属性"
+        :visible.sync="isShowAttrDialog"
+        width="640px"
+        :before-close="handleCloseAttrDialog"
+      >
+        <component :is="currentSelectedComponent.componentName + '-attr'" />
+      </el-dialog>
+    </template>
   </div>
 </template>
 
@@ -31,7 +41,7 @@
 import HomeEditor from "./components/HomeEditor.vue";
 import HomeHeader from "./components/HomeHeader.vue";
 import HomeMarkLine from "./components/HomeMarkLine.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "HomeView",
   data() {
@@ -52,7 +62,7 @@ export default {
     HomeMarkLine,
   },
   computed: {
-    ...mapState(["currentSelectedComponent"]),
+    ...mapState(["currentSelectedComponent", "isShowAttrDialog"]),
     ruleLinePositionStyle() {
       return {
         // TODO: 位置计算取值有问题 应该是取得当前选中组件的pageX和pageY
@@ -71,7 +81,10 @@ export default {
     });
   },
   methods: {
-    // ...mapActions(["updateRuleLine"]),
+    ...mapActions(["controlAttrDialog"]),
+    handleCloseAttrDialog() {
+      this.controlAttrDialog(false);
+    },
     drawRule() {
       this.drawHRule();
       this.drawVRule();

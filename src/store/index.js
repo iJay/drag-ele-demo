@@ -14,6 +14,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    isShowAttrDialog: false, // 显示attr的dialog
     ruleLine: null, // 卡尺的引用
     currentSelectedComponent: null, // 当前选中的组件
     componentData: [], // 数据源
@@ -26,8 +27,20 @@ export default new Vuex.Store({
         componentName: "image-widget",
         icon: require("../assets/image-icon.png"),
         style: {
-          width: "160px",
-          height: "160px",
+          width: 160,
+          height: 160,
+          minWidth: 0,
+          minHeight: 0,
+          zIndex: 1,
+          maxWidth: "100%",
+          maxHeight: "100%",
+          top: 0,
+          left: 0,
+        },
+        propValue: {
+          url: require("../assets/image-icon.png"),
+          opacity: 50,
+          linkType: 0,
         },
         children: [],
       },
@@ -36,7 +49,24 @@ export default new Vuex.Store({
         label: "文本组件",
         componentName: "text-widget",
         icon: require("../assets/text-icon.svg"),
-        style: {},
+        style: {
+          width: 120,
+          height: 120,
+          minWidth: 0,
+          minHeight: 0,
+          zIndex: 1,
+          maxWidth: "100%",
+          maxHeight: "100%",
+          top: 0,
+          left: 0,
+          fontSize: 14,
+          color: "#000",
+          fontFamily: "微软雅黑",
+          fontStyle: "italic", // normal italic oblique
+        },
+        propValue: {
+          text: "文本组件",
+        },
         children: [],
       },
       {
@@ -162,6 +192,10 @@ export default new Vuex.Store({
       const snapshot = _.cloneDeep(state.componentData);
       state.recordSnapshot.push(snapshot);
     },
+    // 显示attr的dialog
+    controlAttrDialog(state, isShow) {
+      state.isShowAttrDialog = isShow;
+    },
   },
   actions: {
     // 添加组件
@@ -223,6 +257,10 @@ export default new Vuex.Store({
     // 保存
     saveSnapshot({ commmit }) {
       commmit("saveSnapshot");
+    },
+    // 显示attr的dialog
+    controlAttrDialog({ commit }, isShow) {
+      commit("controlAttrDialog", isShow);
     },
   },
   modules: {},

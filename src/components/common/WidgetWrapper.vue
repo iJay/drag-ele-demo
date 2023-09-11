@@ -28,6 +28,7 @@
         v-show="selected"
         class="operation-icon el-icon-setting"
         title="设置"
+        @click="handleSetting"
       ></i>
     </div>
     <template v-if="selected">
@@ -85,7 +86,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["currentSelectedComponent", "ruleLine"]),
+    ...mapState(["currentSelectedComponent", "ruleLine", "isShowAttrDialog"]),
     selected() {
       return (
         this.currentSelectedComponent &&
@@ -102,10 +103,14 @@ export default {
       "updateSelectedComponent",
       "updateZIndexToTop",
       "updateZIndexToBottom",
+      "controlAttrDialog",
     ]),
     handleSelectedClick(e) {
       e.stopPropagation();
       this.updateSelectedComponent(this.componentData.id);
+    },
+    handleSetting() {
+      this.controlAttrDialog(true);
     },
     handleDragStart(e) {
       e.preventDefault();

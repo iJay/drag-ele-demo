@@ -98,6 +98,7 @@ export default {
     },
     stopResize(e) {
       e.stopPropagation();
+      // 更新top、left、height三个属性值
       this.updateComponentStyle({
         id: this.componentData.id,
         styleObj: {

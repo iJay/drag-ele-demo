@@ -34,6 +34,12 @@ Vue.component("main-container", () =>
 Vue.component("section-container", () =>
   import("./components/container/SectionContainer.vue")
 );
+Vue.component("image-widget-attr", () =>
+  import("./components/widget/modal/ImageWidgetAttr.vue")
+);
+Vue.component("text-widget-attr", () =>
+  import("./components/widget/modal/TextWidgetAttr.vue")
+);
 Vue.config.productionTip = false;
 
 new Vue({

@@ -8,6 +8,7 @@ import {
   deleteComponentById,
   moveToTop,
   moveToBottom,
+  replaceComponentById,
 } from "../utils";
 
 Vue.use(Vuex);
@@ -196,6 +197,16 @@ export default new Vuex.Store({
     controlAttrDialog(state, isShow) {
       state.isShowAttrDialog = isShow;
     },
+    // 更新当前组件的属性值
+    updateProperty(state, data) {
+      state.currentSelectedComponent[data.attr][data.property] &&
+        (state.currentSelectedComponent[data.attr][data.property] = data.value);
+    },
+    // 保存
+    saveCurrentNewComponent(state) {
+      const currentNewComponent = _.cloneDeep(state.currentSelectedComponent);
+      replaceComponentById(state.componentData, currentNewComponent);
+    },
   },
   actions: {
     // 添加组件
@@ -261,6 +272,14 @@ export default new Vuex.Store({
     // 显示attr的dialog
     controlAttrDialog({ commit }, isShow) {
       commit("controlAttrDialog", isShow);
+    },
+    // 更新当前组件的属性值
+    updateProperty({ commit }, data) {
+      commit("updateProperty", data);
+    },
+    // 保存
+    saveCurrentNewComponent({ commit }) {
+      commit("saveCurrentNewComponent");
     },
   },
   modules: {},

@@ -19,6 +19,18 @@ export function updateComponentStyle(componentData, componentMetaData) {
   }
 }
 
+// 根据id查询相应组件 并替换该组件
+export function replaceComponentById(componentData, componentMetaData) {
+  for (let i = 0; i < componentData.length; i++) {
+    if (componentData[i].id === componentMetaData.id) {
+      componentData[i] = componentMetaData;
+      break;
+    } else {
+      replaceComponentById(componentData[i].children, componentMetaData);
+    }
+  }
+}
+
 // 根据id查询相应组件 并返回该组件
 export function findComponentById(componentData, id) {
   for (let i = 0; i < componentData.length; i++) {

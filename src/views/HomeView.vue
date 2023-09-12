@@ -32,6 +32,12 @@
         :before-close="handleCloseAttrDialog"
       >
         <component :is="currentSelectedComponent.componentName + '-attr'" />
+        <slot name="footer">
+          <el-button @click="handleCloseAttrDialog">取 消</el-button>
+          <el-button type="primary" @click="handleConfirmAttrDialog">
+            确 定
+          </el-button>
+        </slot>
       </el-dialog>
     </template>
   </div>
@@ -81,7 +87,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions(["controlAttrDialog"]),
+    ...mapActions(["controlAttrDialog", "saveCurrentNewComponent"]),
     handleCloseAttrDialog() {
       this.controlAttrDialog(false);
     },
@@ -146,6 +152,10 @@ export default {
         }
       }
       vRuleCtx.stroke();
+    },
+    handleConfirmAttrDialog() {
+      this.saveCurrentNewComponent();
+      this.controlAttrDialog(false);
     },
   },
 };

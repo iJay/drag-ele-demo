@@ -6,17 +6,16 @@
         <CommonAttr />
       </el-collapse-item>
       <el-collapse-item title="图片属性" name="2">
-        <!-- 文字内容（textarea） 样式设置（checkbox） 字体设置（selelct） 文字大小（inputnumber） 文字颜色（color） -->
         <el-form label-width="80px">
           <el-form-item label="文字内容" prop="text">
             <el-input
               type="textarea"
-              v-model="currentSelectedComponent.propValue.text"
+              v-model="text"
               style="width: 200px"
             ></el-input>
           </el-form-item>
-          <el-form-item label="样式设置" prop="style">
-            <el-radio-group v-model="currentSelectedComponent.style.fontStyle">
+          <el-form-item label="样式设置" prop="fontStyle">
+            <el-radio-group v-model="fontStyle">
               <el-radio label="bold">加粗</el-radio>
               <el-radio label="italic">斜体</el-radio>
               <el-radio label="oblique">下划线</el-radio>
@@ -24,7 +23,7 @@
           </el-form-item>
           <el-form-item label="字体设置" prop="fontFamily">
             <el-select
-              v-model="currentSelectedComponent.style.fontFamily"
+              v-model="fontFamily"
               placeholder="请选择字体"
               style="width: 200px"
             >
@@ -38,7 +37,7 @@
           </el-form-item>
           <el-form-item label="文字大小" prop="fontSize">
             <el-input-number
-              v-model="currentSelectedComponent.style.fontSize"
+              v-model="fontSize"
               :min="12"
               :max="100"
               style="width: 200px"
@@ -46,7 +45,7 @@
           </el-form-item>
           <el-form-item label="文字颜色" prop="color">
             <el-color-picker
-              v-model="currentSelectedComponent.style.color"
+              v-model="color"
               style="width: 200px"
             ></el-color-picker>
           </el-form-item>
@@ -57,7 +56,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import CommonAttr from "@/components/common/CommonAttr.vue";
 export default {
   name: "TextWidgetAttr",
@@ -67,13 +65,59 @@ export default {
   data() {
     return {
       fontFamilies: ["宋体", "微软雅黑"],
-      activeNames: ["1"],
+      activeNames: "1",
     };
   },
   computed: {
-    ...mapState(["currentSelectedComponent"]),
+    text: {
+      get() {
+        return this.$store.state.currentSelectedComponent.propValue.text;
+      },
+      set(val) {
+        this.updateProperty("propValue", "text", val);
+      },
+    },
+    fontStyle: {
+      get() {
+        return this.$store.state.currentSelectedComponent.style.fontStyle;
+      },
+      set(val) {
+        this.updateProperty("style", "fontStyle", val);
+      },
+    },
+    fontFamily: {
+      get() {
+        return this.$store.state.currentSelectedComponent.style.fontFamily;
+      },
+      set(val) {
+        this.updateProperty("style", "fontFamily", val);
+      },
+    },
+    fontSize: {
+      get() {
+        return this.$store.state.currentSelectedComponent.style.fontSize;
+      },
+      set(val) {
+        this.updateProperty("style", "fontSize", val);
+      },
+    },
+    color: {
+      get() {
+        return this.$store.state.currentSelectedComponent.style.color;
+      },
+      set(val) {
+        this.updateProperty("style", "color", val);
+      },
+    },
   },
-  methods: {},
+  methods: {
+    handleChange(val) {
+      this.activeNames = val;
+    },
+    updateProperty(attr, property, value) {
+      this.$store.commit("updateProperty", { attr, property, value });
+    },
+  },
 };
 </script>
 
